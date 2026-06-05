@@ -6,4 +6,4 @@
 // 설정 방법: README.md 참고
 //
 
-window.SCRIPT_URL = 'YOUR_SCRIPT_URL_HERE';
+window.SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyxYH_yTZXlySESwNEg5akCmkFJ9HzAqxeHL6ifGoFoH38eaMdKTs5USdevRB7wd9Is/exec';
