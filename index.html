@@ -622,7 +622,7 @@ sec.innerHTML = `
     <div style="margin-top:1.5rem;border-top:0.5px solid var(--border);padding-top:1rem">
       <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:0.05em">${m}/${d} 행사 · ${events.length}건</div>
       <div class="event-list">${events.map(e => `
-        <div class="event-row" style="display:grid;grid-template-columns:${e.img ? '80px 1fr' : '1fr'};gap:0;padding:0;overflow:hidden" onclick="openDetail('${e._key}')">
+        <div class="event-row" style="display:grid;grid-template-columns:${e.img ? '80px 1fr' : '1fr'};gap:0;padding:0;overflow:hidden">
           ${e.img ? `<img src="${e.img}" style="width:80px;height:100%;object-fit:cover;min-height:90px;border-radius:8px 0 0 8px">` : ''}
           <div style="padding:12px 14px">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
