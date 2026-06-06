@@ -515,7 +515,7 @@ function openDetail(key) {
   document.getElementById('detail-venue').textContent = e.venue || '—';
   const urlRow = document.getElementById('detail-url-row');
   const urlEl = document.getElementById('detail-url');
-  if (e.url) { urlEl.innerHTML = `<a href="${e.url}" target="_blank">${e.url}</a>`; urlRow.style.display=''; }
+  if (e.url) { urlEl.innerHTML = `<a href="${e.url}" target="_blank" style="display:inline-block;padding:6px 14px;background:var(--text);color:var(--bg);border-radius:6px;font-family:'DM Mono',monospace;font-size:12px;text-decoration:none">🔗 링크 열기</a>`; urlRow.style.display=''; }
   else { urlRow.style.display='none'; }
   const memoRow = document.getElementById('detail-memo-row');
   if (e.memo) { document.getElementById('detail-memo').textContent = e.memo; memoRow.style.display=''; }
