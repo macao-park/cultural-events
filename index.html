@@ -551,7 +551,7 @@ el.innerHTML = `<div class="event-list">${list.map(e => `
           <span class="event-badge badge-${e.category}">${e.category}</span>
           ${isAdmin ? `<button onclick="openDetail('${e._key}')" style="font-size:11px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:10px;padding:2px 8px;cursor:pointer;color:var(--muted)">수정</button><button onclick="if(confirm('삭제할까요?')){apiDelete('${e._key}');allEvents=allEvents.filter(ev=>ev._key!=='${e._key}');renderCurrent();}" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px">🗑️</button>` : ''}        </div>
         <div class="event-title">${e.title}</div>
-        ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
+        ${e.venue ? `<div class="event-venue">📍 ${e.venue} <button onclick="event.stopPropagation();navigator.clipboard.writeText('${e.venue}').then(()=>alert('복사됐어요!'))" style="font-size:10px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:4px;padding:1px 6px;cursor:pointer;color:var(--muted);margin-left:4px">복사</button></div>` : ''}
         ${e.memo ? `<div class="event-venue" style="color:var(--muted)">💬 ${e.memo}</div>` : ''}
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
           <div class="event-dates" style="white-space:nowrap">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''))}</div>
@@ -629,7 +629,7 @@ sec.innerHTML = `
               <span class="event-badge badge-${e.category}">${e.category}</span>${isAdmin ? `<button onclick="event.stopPropagation();if(confirm('삭제할까요?')){apiDelete('${e._key}');allEvents=allEvents.filter(ev=>ev._key!=='${e._key}');renderCurrent();}" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px">🗑️</button>` : ''}
             </div>
             <div class="event-title">${e.title}</div>
-            ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
+            ${e.venue ? `<div class="event-venue">📍 ${e.venue} <button onclick="event.stopPropagation();navigator.clipboard.writeText('${e.venue}').then(()=>alert('복사됐어요!'))" style="font-size:10px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:4px;padding:1px 6px;cursor:pointer;color:var(--muted);margin-left:4px">복사</button></div>` : ''}
             ${e.memo ? `<div class="event-venue" style="color:var(--muted)">💬 ${e.memo}</div>` : ''}
             <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
               <div class="event-dates">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''))}</div>
