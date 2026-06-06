@@ -477,6 +477,8 @@ async function loadEvents() {
   allEvents = data ? Object.entries(data).map(([k,v]) => ({...v, _key: k})) : [];
   updateCount();
   renderCurrent();
+  renderCurrent();
+if (currentView === 'map') renderMap();  // ← 추가
 }
 
 async function apiAdd(data) {
