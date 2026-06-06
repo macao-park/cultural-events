@@ -387,8 +387,9 @@ header {
   </div>
 </div>
 
-<script src="config.js"></script>
 <script>
+const SHEETDB_URL = 'https://sheetdb.io/api/v1/5k2qok22bjh0t';
+
 let allEvents = [];
 let activeFilter = 'all';
 let currentView = 'list';
@@ -398,44 +399,34 @@ const today = new Date();
 calYear = today.getFullYear();
 calMonth = today.getMonth();
 
-// ── API ──
-async function api(action, body = {}) {
-  if (!window.SCRIPT_URL || window.SCRIPT_URL.includes('YOUR_SCRIPT_URL')) {
-    document.getElementById('config-banner').classList.add('show');
-    return useDemoData(action, body);
-  }
-  return new Promise((resolve, reject) => {
-    const cb = 'cb_' + Date.now();
-    const url = new URL(window.SCRIPT_URL);
-    url.searchParams.set('action', action);
-    url.searchParams.set('callback', cb);
-    Object.entries(body).forEach(([k,v]) => url.searchParams.set(k, v));
-    window[cb] = (data) => { delete window[cb]; script.remove(); resolve(data); };
-    const script = document.createElement('script');
-    script.src = url.toString();
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
-}
-
-// 데모 데이터 (SCRIPT_URL 설정 전)
-const DEMO = [
-  { id: '1', title: '루프랩부산 2026', category: '축제', startDate: '2026-04-11', endDate: '2026-06-29', venue: '부산 일원', url: '', memo: '', status: '예정' },
-  { id: '2', title: 'F1963 미디어아트전', category: '전시', startDate: '2026-08-01', endDate: '2026-09-30', venue: 'F1963 석천홀', url: '', memo: '', status: '예정' },
-  { id: '3', title: '2026 부산비엔날레', category: '전시', startDate: '2026-09-06', endDate: '2026-11-17', venue: '부산현대미술관', url: '', memo: '꼭 가고싶다', status: '예정' },
-  { id: '4', title: '부산국제영화제 (BIFF)', category: '영화', startDate: '2026-10-07', endDate: '2026-10-16', venue: '영화의전당', url: '', memo: '', status: '예정' },
-];
-function useDemoData(action, body) {
-  if (action === 'list') return { events: DEMO };
-  return { success: true, id: Date.now().toString() };
-}
-
-// ── data ──
 async function loadEvents() {
-  const r = await api('list');
-  allEvents = r.events || [];
+  const res = await fetch(SHEETDB_URL + '?sheet=행사목록');
+  const rows = await res.json();
+  allEvents = Array.isArray(rows) ? rows : [];
   updateCount();
   renderCurrent();
+}
+
+async function apiAdd(data) {
+  const res = await fetch(SHEETDB_URL + '?sheet=행사목록', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data: [data] })
+  });
+  return res.json();
+}
+
+async function apiUpdate(id, data) {
+  const res = await fetch(SHEETDB_URL + '/id/' + id + '?sheet=행사목록', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data })
+  });
+  return res.json();
+}
+
+async function apiDelete(id) {
+  await fetch(SHEETDB_URL + '/id/' + id + '?sheet=행사목록', { method: 'DELETE' });
 }
 
 function updateCount() {
@@ -448,10 +439,9 @@ function filtered() {
   return activeFilter === 'all' ? allEvents : allEvents.filter(e => e.category === activeFilter);
 }
 
-// ── list view ──
 function renderList() {
   const el = document.getElementById('list-view');
-  const list = filtered().sort((a, b) => a.startDate.localeCompare(b.startDate));
+  const list = filtered().sort((a, b) => (a.startDate||'').localeCompare(b.startDate||''));
   if (!list.length) { el.innerHTML = '<p class="empty">등록된 행사가 없어요</p>'; return; }
   el.innerHTML = `<div class="event-list">${list.map(e => `
     <div class="event-row" onclick="openModal('${e.id}')">
@@ -467,22 +457,16 @@ function renderList() {
     </div>`).join('')}</div>`;
 }
 
-// ── calendar view ──
 function renderCal() {
   const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
   document.getElementById('cal-title').textContent = `${calYear}년 ${months[calMonth]}`;
-
   const grid = document.getElementById('cal-grid');
-  // remove existing cells (keep dow headers = first 7)
   while (grid.children.length > 7) grid.removeChild(grid.lastChild);
-
   const firstDay = new Date(calYear, calMonth, 1).getDay();
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
   const todayStr = `${today.getFullYear()}-${p(today.getMonth()+1)}-${p(today.getDate())}`;
-
-  const CHIP_COLORS = { '전시': '#EBF0FA', '공연': '#FAE8F2', '영화': '#FDF5E6', '축제': '#EBF5EF', '기타': '#E2DDD4' };
-  const CHIP_TEXT = { '전시': '#1F4F8A', '공연': '#8A2A5A', '영화': '#8A5A1A', '축제': '#2A6B4A', '기타': '#7A746A' };
-
+  const CHIP_COLORS = { '전시':'#EBF0FA','공연':'#FAE8F2','영화':'#FDF5E6','축제':'#EBF5EF','기타':'#E2DDD4' };
+  const CHIP_TEXT  = { '전시':'#1F4F8A','공연':'#8A2A5A','영화':'#8A5A1A','축제':'#2A6B4A','기타':'#7A746A' };
   for (let i = 0; i < firstDay; i++) {
     const d = document.createElement('div'); d.className = 'cal-cell other-month'; grid.appendChild(d);
   }
@@ -490,23 +474,20 @@ function renderCal() {
     const dateStr = `${calYear}-${p(calMonth+1)}-${p(d)}`;
     const cell = document.createElement('div');
     cell.className = 'cal-cell' + (dateStr === todayStr ? ' today' : '');
-    const dayEvents = allEvents.filter(e => e.startDate <= dateStr && (e.endDate || e.startDate) >= dateStr);
+    const dayEvents = allEvents.filter(e => e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
     cell.innerHTML = `<div class="day-num">${d}</div>` +
-      dayEvents.slice(0, 2).map(e =>
+      dayEvents.slice(0,2).map(e =>
         `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'}">${e.title}</span>`
       ).join('') +
-      (dayEvents.length > 2 ? `<span style="font-size:9px;color:var(--muted)">+${dayEvents.length - 2}개</span>` : '');
+      (dayEvents.length > 2 ? `<span style="font-size:9px;color:var(--muted)">+${dayEvents.length-2}개</span>` : '');
     grid.appendChild(cell);
   }
 }
 
-// ── modal ──
 function openModal(id) {
   editingId = id || null;
-  const modal = document.getElementById('modal');
   document.getElementById('modal-title').textContent = id ? '행사 수정' : '새 행사 추가';
   document.getElementById('delete-btn').style.display = id ? 'block' : 'none';
-
   if (id) {
     const e = allEvents.find(ev => ev.id == id);
     if (e) {
@@ -534,6 +515,7 @@ function closeModalOutside(e) { if (e.target === document.getElementById('overla
 
 async function saveEvent() {
   const data = {
+    id: editingId || Date.now().toString(),
     title: document.getElementById('f-title').value.trim(),
     category: document.getElementById('f-cat').value,
     status: document.getElementById('f-status').value,
@@ -545,12 +527,12 @@ async function saveEvent() {
   };
   if (!data.title) { alert('행사명을 입력해주세요'); return; }
   if (editingId) {
-    await api('update', { id: editingId, ...data });
+    await apiUpdate(editingId, data);
     const idx = allEvents.findIndex(e => e.id == editingId);
-    if (idx > -1) allEvents[idx] = { ...allEvents[idx], ...data };
+    if (idx > -1) allEvents[idx] = data;
   } else {
-    const r = await api('add', data);
-    allEvents.push({ id: r.id || Date.now().toString(), ...data });
+    await apiAdd(data);
+    allEvents.push(data);
   }
   closeModal();
   updateCount();
@@ -559,19 +541,18 @@ async function saveEvent() {
 
 async function deleteEvent() {
   if (!confirm('이 행사를 삭제할까요?')) return;
-  await api('delete', { id: editingId });
+  await apiDelete(editingId);
   allEvents = allEvents.filter(e => e.id != editingId);
   closeModal();
   updateCount();
   renderCurrent();
 }
 
-// ── nav ──
 function setView(v) {
   currentView = v;
   document.getElementById('list-view').style.display = v === 'list' ? 'block' : 'none';
   document.getElementById('cal-view').style.display = v === 'cal' ? 'block' : 'none';
-  document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', (i === 0) === (v === 'list')));
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active',(i===0)===(v==='list')));
   renderCurrent();
 }
 
@@ -597,12 +578,10 @@ function renderCurrent() {
 
 function fmtDate(d) {
   if (!d) return '';
-  const [y, m, day] = d.split('-');
+  const [y,m,day] = d.split('-');
   return `${m}/${day}`;
 }
-function p(n) { return String(n).padStart(2, '0'); }
+function p(n) { return String(n).padStart(2,'0'); }
 
 loadEvents();
 </script>
-</body>
-</html>
