@@ -612,17 +612,25 @@ async function saveEvent() {
     // 수정은 반복 없이
     await apiUpdate(editingId, data);
     const idx = allEvents.findIndex(e => e._key === editingId);
-    if (idx > -1) allEvents[idx] = {...data, _key: editingId};
+    const targetGroupId = idx > -1 ? allEvents[idx].groupId : null;
+    if (idx > -1) allEvents[idx] = {...allEvents[idx], ...data};
+    if (targetGroupId) {
+      const siblings = allEvents.filter(e => e.groupId === targetGroupId && e._key !== editingId);
+      for (const s of siblings) {
+        await apiUpdate(s._key, { title: data.title, category: data.category, venue: data.venue, url: data.url, memo: data.memo, period: data.period });
+  }
+}
   } else if (checkedDays.length > 0 && data.startDate && data.endDate) {
     // 대표 행사 1개 (목록용)
-    await apiAdd({ ...data, calHidden: true });
+    const groupId = Date.now().toString();
+    await apiAdd({ ...data, calHidden: true, groupId });
     // 날짜별 행사 (캘린더용, hidden)
     const start = new Date(data.startDate);
     const end = new Date(data.endDate);
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       if (checkedDays.includes(d.getDay())) {
         const dateStr = d.toISOString().slice(0, 10);
-        await apiAdd({ ...data, startDate: dateStr, endDate: dateStr, hidden: true });
+        await apiAdd({ ...data, startDate: dateStr, endDate: dateStr, hidden: true, groupId });
       }
     }
     await loadEvents();
