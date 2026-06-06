@@ -332,7 +332,25 @@ header {
 
 <button class="add-fab" title="행사 추가" onclick="openModal()">＋</button>
 
-<!-- Modal -->
+<!-- 상세보기 Modal -->
+<div class="overlay" id="detail-overlay" onclick="closeDetailOutside(event)">
+  <div class="modal" id="detail-modal">
+    <button class="close-btn" onclick="closeDetail()">✕</button>
+    <h3 id="detail-title"></h3>
+    <div class="form-row"><label>분류</label><div id="detail-cat"></div></div>
+    <div class="form-row"><label>기간</label><div id="detail-date"></div></div>
+    <div class="form-row"><label>장소</label><div id="detail-venue"></div></div>
+    <div class="form-row" id="detail-url-row"><label>링크</label><div id="detail-url"></div></div>
+    <div class="form-row" id="detail-memo-row"><label>메모</label><div id="detail-memo"></div></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="detail-delete-btn" onclick="deleteFromDetail()">삭제</button>
+      <button class="btn" onclick="closeDetail()">닫기</button>
+      <button class="btn btn-primary" onclick="switchToEdit()">행사수정</button>
+    </div>
+  </div>
+</div>
+
+<!-- 수정/추가 Modal -->
 <div class="overlay" id="overlay" onclick="closeModalOutside(event)">
   <div class="modal" id="modal">
     <button class="close-btn" onclick="closeModal()">✕</button>
@@ -436,7 +454,7 @@ function renderList() {
   const list = filtered().sort((a, b) => (a.startDate||'').localeCompare(b.startDate||''));
   if (!list.length) { el.innerHTML = '<p class="empty">등록된 행사가 없어요</p>'; return; }
   el.innerHTML = `<div class="event-list">${list.map(e => `
-    <div class="event-row" onclick="openModal('${e._key}')">
+    <div class="event-row" onclick="openDetail('${e._key}')">
       <span class="event-badge badge-${e.category}">${e.category}</span>
       <div>
         <div class="event-title">${e.title}</div>
@@ -469,13 +487,44 @@ function renderCal() {
     const dayEvents = filtered().filter(e => e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
     cell.innerHTML = `<div class="day-num">${d}</div>` +
       dayEvents.slice(0,2).map(e =>
-        `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'};cursor:pointer" onclick="openModal('${e._key}')">${e.title}</span>`
+        `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'};cursor:pointer" onclick="openDetail('${e._key}')">${e.title}</span>`
       ).join('') +
       (dayEvents.length > 2 ? `<span style="font-size:9px;color:var(--muted)">+${dayEvents.length-2}개</span>` : '');
     grid.appendChild(cell);
   }
 }
 
+function openDetail(key) {
+  const e = allEvents.find(ev => ev._key === key);
+  if (!e) return;
+  editingId = key;
+  document.getElementById('detail-title').textContent = e.title;
+  document.getElementById('detail-cat').textContent = e.category;
+  document.getElementById('detail-date').textContent = e.startDate + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + e.endDate : '');
+  document.getElementById('detail-venue').textContent = e.venue || '—';
+  const urlRow = document.getElementById('detail-url-row');
+  const urlEl = document.getElementById('detail-url');
+  if (e.url) { urlEl.innerHTML = `<a href="${e.url}" target="_blank">${e.url}</a>`; urlRow.style.display=''; }
+  else { urlRow.style.display='none'; }
+  const memoRow = document.getElementById('detail-memo-row');
+  if (e.memo) { document.getElementById('detail-memo').textContent = e.memo; memoRow.style.display=''; }
+  else { memoRow.style.display='none'; }
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
+function closeDetailOutside(e) { if (e.target === document.getElementById('detail-overlay')) closeDetail(); }
+
+function switchToEdit() {
+  closeDetail();
+  openModal(editingId);
+}
+
+function deleteFromDetail() {
+  closeDetail();
+  deleteEvent();
+}
+  
 function openModal(key) {
   editingId = key || null;
   document.getElementById('modal-title').textContent = key ? '행사 수정' : '새 행사 추가';
