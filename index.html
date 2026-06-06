@@ -912,9 +912,10 @@ if (sessionStorage.getItem('admin')) {
   document.getElementById('admin-btn').style.color = 'var(--accent)';
 }
   
-if (location.hash === '#cal') setView('cal');
+const hash = location.hash.replace('#','');
+if (hash === 'cal' || hash === 'map' || hash === 'list') setView(hash);
+else setView('list');
 loadEvents();
   
-loadEvents();
 </script>
 </body>
