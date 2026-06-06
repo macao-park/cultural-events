@@ -619,9 +619,27 @@ function renderCal() {
     }
     if (!events || events.length === 0) { sec.innerHTML = ''; return; }
     const [y,m,d] = dateStr.split('-');
-    sec.innerHTML = `
-      <div style="margin-top:1.5rem;border-top:0.5px solid var(--border);padding-top:1rem">
-        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:0.05em">${m}/${d} 행사 · ${events.length}건</div>
+sec.innerHTML = `
+  <div style="margin-top:1.5rem;border-top:0.5px solid var(--border);padding-top:1rem">
+    <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:0.05em">${m}/${d} 행사 · ${events.length}건</div>
+    <div class="event-list">${events.map(e => `
+      <div class="event-row" style="display:grid;grid-template-columns:${e.img ? '80px 1fr' : '1fr'};gap:0;padding:0;overflow:hidden" onclick="openDetail('${e._key}')">
+        ${e.img ? `<img src="${e.img}" style="width:80px;height:100%;object-fit:cover;min-height:90px;border-radius:8px 0 0 8px">` : ''}
+        <div style="padding:12px 14px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+            <span class="event-badge badge-${e.category}">${e.category}</span>
+          </div>
+          <div class="event-title">${e.title}</div>
+          ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
+          ${e.memo ? `<div class="event-venue" style="color:var(--muted)">💬 ${e.memo}</div>` : ''}
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+            <div class="event-dates">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''))}</div>
+            ${e.url ? `<a href="${e.url}" target="_blank" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:10px;padding:2px 10px">LINK</a>` : ''}
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>`;
         ${events.map(e => `
           <div onclick="openDetail('${e._key}')" style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);cursor:pointer">
             <div style="width:4px;min-height:40px;border-radius:2px;background:${CAT_COLORS[e.category]||'#D3D1C7'};flex-shrink:0;margin-top:2px"></div>
