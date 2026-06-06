@@ -640,15 +640,7 @@ sec.innerHTML = `
       </div>`).join('')}
     </div>
   </div>`;
-        ${events.map(e => `
-          <div onclick="openDetail('${e._key}')" style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);cursor:pointer">
-            <div style="width:4px;min-height:40px;border-radius:2px;background:${CAT_COLORS[e.category]||'#D3D1C7'};flex-shrink:0;margin-top:2px"></div>
-            <div>
-              <div style="font-family:'Noto Serif KR',serif;font-size:14px;color:var(--text)">${e.title}</div>
-              ${e.venue ? `<div style="font-size:11px;color:var(--muted);margin-top:2px">📍 ${e.venue}</div>` : ''}
-              ${e.url ? `<a href="${e.url}" target="_blank" style="font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none">링크 →</a>` : ''}
-            </div>
-          </div>`).join('')}
+
       </div>`;
   }
 
