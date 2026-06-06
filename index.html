@@ -637,13 +637,24 @@ function fmtDate(d) {
 function p(n) { return String(n).padStart(2,'0'); }
 
 function checkAdmin() {
-  const pw = prompt('관리자 비밀번호를 입력하세요 (취소하면 일반 모드)');
+  if (isAdmin) {
+    if (confirm('관리자 모드를 종료할까요?')) {
+      isAdmin = false;
+      sessionStorage.removeItem('admin');
+      document.getElementById('admin-btn').textContent = '관리자';
+      document.getElementById('admin-btn').style.color = '';
+      renderCurrent();
+    }
+    return;
+  }
+  const pw = prompt('관리자 비밀번호를 입력하세요');
   if (pw === ADMIN_PW) {
     isAdmin = true;
+    sessionStorage.setItem('admin', '1');
     document.getElementById('admin-btn').textContent = '관리자 ✓';
     document.getElementById('admin-btn').style.color = 'var(--accent)';
+    renderCurrent();
   }
-  renderCurrent();
 }
 
 function renderAdminUI() {
@@ -654,6 +665,12 @@ function renderCurrent() {
   renderAdminUI();  // ← 추가
   if (currentView === 'list') renderList();
   else renderCal();
+}
+
+if (sessionStorage.getItem('admin')) {
+  isAdmin = true;
+  document.getElementById('admin-btn').textContent = '관리자 ✓';
+  document.getElementById('admin-btn').style.color = 'var(--accent)';
 }
   
 if (location.hash === '#cal') setView('cal');
