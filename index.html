@@ -379,6 +379,12 @@ header {
         </select>
       </div>
     </div>
+
+    <div class="form-row">
+  <label>기간 표시 (선택)</label>
+  <input type="text" id="f-period" placeholder="예: 6. 4(목) ~ 6. 21(일) [매주 목~일 운영]">
+</div>
+    
     <div class="form-row-2">
       <div class="form-row">
         <label>시작일</label>
@@ -489,7 +495,7 @@ function renderList() {
         ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
       </div>
       <div>
-        <div class="event-dates">${fmtDate(e.startDate)}${e.endDate && e.endDate !== e.startDate ? ' ~<br>' + fmtDate(e.endDate) : ''}</div>
+        <div class="event-dates">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~<br>' + fmtDate(e.endDate) : ''))}</div>
       </div>
     </div>`).join('')}</div>`;
 }
@@ -568,6 +574,7 @@ function openModal(key) {
       document.getElementById('f-start').value = e.startDate;
       document.getElementById('f-end').value = e.endDate || '';
       document.getElementById('f-venue').value = e.venue;
+      document.getElementById('f-period').value = e.period || '';
       document.getElementById('f-url').value = e.url;
       document.getElementById('f-memo').value = e.memo;
     }
@@ -587,6 +594,7 @@ async function saveEvent() {
   const data = {
     title: document.getElementById('f-title').value.trim(),
     category: document.getElementById('f-cat').value,
+    period: document.getElementById('f-period').value.trim(),
     startDate: document.getElementById('f-start').value,
     endDate: document.getElementById('f-end').value,
     venue: document.getElementById('f-venue').value.trim(),
