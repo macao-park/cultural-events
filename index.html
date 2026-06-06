@@ -96,7 +96,7 @@ header {
 .filter-btn.active { border-color: currentColor; }
 .filter-btn[data-cat="전시"].active { color: var(--blue); background: var(--blue-bg); border-color: var(--blue); }
 .filter-btn[data-cat="공연"].active { color: var(--pink); background: var(--pink-bg); border-color: var(--pink); }
-.filter-btn[data-cat="영화"].active { color: var(--amber); background: var(--amber-bg); border-color: var(--amber); }
+.filter-btn[data-cat="문화"].active { color: var(--amber); background: var(--amber-bg); border-color: var(--amber); }
 .filter-btn[data-cat="축제"].active { color: var(--green); background: var(--green-bg); border-color: var(--green); }
 .filter-btn[data-cat="기타"].active { color: var(--muted); background: var(--border); border-color: var(--muted); }
 .filter-btn[data-cat="all"].active { color: var(--accent); background: var(--accent-bg); border-color: var(--accent); }
@@ -147,7 +147,7 @@ header {
 }
 .badge-전시 { color: var(--blue); background: var(--blue-bg); }
 .badge-공연 { color: var(--pink); background: var(--pink-bg); }
-.badge-영화 { color: var(--amber); background: var(--amber-bg); }
+.badge-문화 { color: var(--amber); background: var(--amber-bg); }
 .badge-축제 { color: var(--green); background: var(--green-bg); }
 .badge-기타 { color: var(--muted); background: var(--border); }
 
@@ -320,7 +320,7 @@ header {
       <button class="filter-btn active" data-cat="all" onclick="setFilter(this,'all')">전체</button>
       <button class="filter-btn" data-cat="전시" onclick="setFilter(this,'전시')">전시</button>
       <button class="filter-btn" data-cat="공연" onclick="setFilter(this,'공연')">공연</button>
-      <button class="filter-btn" data-cat="영화" onclick="setFilter(this,'영화')">영화</button>
+      <button class="filter-btn" data-cat="문화" onclick="setFilter(this,'문화')">문화</button>
       <button class="filter-btn" data-cat="축제" onclick="setFilter(this,'축제')">축제</button>
       <button class="filter-btn" data-cat="기타" onclick="setFilter(this,'기타')">기타</button>
     </div>
@@ -375,7 +375,7 @@ header {
       <div class="form-row">
         <label>분류</label>
         <select id="f-cat">
-          <option>전시</option><option>공연</option><option>영화</option><option>축제</option><option>기타</option>
+          <option>전시</option><option>공연</option><option>문화</option><option>축제</option><option>기타</option>
         </select>
       </div>
     </div>
@@ -509,8 +509,8 @@ function renderCal() {
   const firstDay = new Date(calYear, calMonth, 1).getDay();
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
   const todayStr = `${today.getFullYear()}-${p(today.getMonth()+1)}-${p(today.getDate())}`;
-  const CHIP_COLORS = { '전시':'#EBF0FA','공연':'#FAE8F2','영화':'#FDF5E6','축제':'#EBF5EF','기타':'#E2DDD4' };
-  const CHIP_TEXT  = { '전시':'#1F4F8A','공연':'#8A2A5A','영화':'#8A5A1A','축제':'#2A6B4A','기타':'#7A746A' };
+  const CHIP_COLORS = { '전시':'#EBF0FA','공연':'#FAE8F2','문화':'#FDF5E6','축제':'#EBF5EF','기타':'#E2DDD4' };
+  const CHIP_TEXT  = { '전시':'#1F4F8A','공연':'#8A2A5A','문화':'#8A5A1A','축제':'#2A6B4A','기타':'#7A746A' };
   for (let i = 0; i < firstDay; i++) {
     const d = document.createElement('div'); d.className = 'cal-cell other-month'; grid.appendChild(d);
   }
