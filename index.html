@@ -311,11 +311,12 @@ header {
     (<a href="https://github.com" target="_blank">설정 가이드 보기</a>)
   </div>
 
-<div style="margin-bottom:1rem;display:flex;justify-content:flex-end">
-  <div style="position:relative;width:200px">
+<div style="margin-bottom:1rem;display:flex;justify-content:flex-end;align-items:center;gap:8px">
+  <div id="search-wrap" style="display:flex;align-items:center;gap:6px">
     <input type="text" id="search-input" placeholder="검색..." oninput="renderCurrent()"
-      style="width:100%;padding:6px 10px 6px 28px;border:1px solid var(--border);border-radius:20px;background:var(--surface);font-family:'Noto Serif KR',serif;font-size:12px;color:var(--text);outline:none">
-    <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px">🔍</span>
+      style="width:0;padding:0;border:none;background:transparent;font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text);outline:none;transition:width 0.3s,padding 0.3s;overflow:hidden">
+    <button onclick="toggleSearch()" id="search-btn"
+      style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px">🔍</button>
   </div>
 </div>
   
@@ -482,6 +483,29 @@ async function apiUpdate(key, data) {
 async function apiDelete(key) {
   await fetch(DB + '/' + key + '.json', { method: 'DELETE' });
 }
+
+let searchOpen = false;
+function toggleSearch() {
+  searchOpen = !searchOpen;
+  const input = document.getElementById('search-input');
+  if (searchOpen) {
+    input.style.width = '160px';
+    input.style.padding = '6px 10px';
+    input.style.border = '1px solid var(--border)';
+    input.style.borderRadius = '20px';
+    input.style.background = 'var(--surface)';
+    input.focus();
+  } else {
+    input.style.width = '0';
+    input.style.padding = '0';
+    input.style.border = 'none';
+    input.style.background = 'transparent';
+    input.value = '';
+    renderCurrent();
+  }
+}
+
+  
 function togglePast() {
   showPast = !showPast;
   const btn = document.getElementById('past-btn');
