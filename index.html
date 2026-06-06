@@ -469,7 +469,7 @@ function renderCal() {
     const dayEvents = filtered().filter(e => e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
     cell.innerHTML = `<div class="day-num">${d}</div>` +
       dayEvents.slice(0,2).map(e =>
-        `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'}">${e.title}</span>`
+        `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'};cursor:pointer" onclick="openModal('${e._key}')">${e.title}</span>`
       ).join('') +
       (dayEvents.length > 2 ? `<span style="font-size:9px;color:var(--muted)">+${dayEvents.length-2}개</span>` : '');
     grid.appendChild(cell);
