@@ -518,7 +518,7 @@ function renderCal() {
     const dateStr = `${calYear}-${p(calMonth+1)}-${p(d)}`;
     const cell = document.createElement('div');
     cell.className = 'cal-cell' + (dateStr === todayStr ? ' today' : '');
-    const dayEvents = allEvents.filter(e => e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
+    const dayEvents = allEvents.filter(e => !e.calHidden && e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
     cell.innerHTML = `<div class="day-num">${d}</div>` +
       dayEvents.slice(0,2).map(e =>
         `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'};cursor:pointer" onclick="openDetail('${e._key}')">${e.title}</span>`
@@ -615,7 +615,7 @@ async function saveEvent() {
     if (idx > -1) allEvents[idx] = {...data, _key: editingId};
   } else if (checkedDays.length > 0 && data.startDate && data.endDate) {
     // 대표 행사 1개 (목록용)
-    await apiAdd({ ...data });
+    await apiAdd({ ...data, calHidden: true });
     // 날짜별 행사 (캘린더용, hidden)
     const start = new Date(data.startDate);
     const end = new Date(data.endDate);
