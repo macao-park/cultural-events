@@ -496,11 +496,17 @@ function renderList() {
         ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
       </div>
       <div>
-        <div class="event-dates">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~<br>' + fmtDate(e.endDate) : ''))}</div>
+        <div class="event-dates" style="white-space:nowrap">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''))}</div>
       </div>
     </div>`).join('')}</div>`;
 }
 
+function showMoreEvents(dateStr) {
+  const dayEvents = allEvents.filter(e => !e.calHidden && e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
+  const [y,m,d] = dateStr.split('-');
+  alert(`${m}/${d} 행사 목록:\n\n` + dayEvents.map(e => `• ${e.title}`).join('\n'));
+}
+  
 function renderCal() {
   const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
   document.getElementById('cal-title').textContent = `${calYear}년 ${months[calMonth]}`;
@@ -523,7 +529,7 @@ function renderCal() {
       dayEvents.slice(0,2).map(e =>
         `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'};cursor:pointer" onclick="openDetail('${e._key}')">${e.title}</span>`
       ).join('') +
-      (dayEvents.length > 2 ? `<span style="font-size:9px;color:var(--muted)">+${dayEvents.length-2}개</span>` : '');
+      (dayEvents.length > 2 ? `<span style="font-size:9px;color:var(--muted);cursor:pointer" onclick="showMoreEvents('${dateStr}')"">+${dayEvents.length-2}개</span>` : '');
     grid.appendChild(cell);
   }
 }
