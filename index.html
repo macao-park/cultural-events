@@ -182,8 +182,7 @@ header {
 .cal-dow { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: center; padding: 4px 0; letter-spacing: 0.05em; }
 .cal-cell {
   min-height: 70px;
-  height: 90px;
-  overflow: hidden;
+  overflow: visible;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 6px;
@@ -526,10 +525,10 @@ function renderCal() {
     cell.className = 'cal-cell' + (dateStr === todayStr ? ' today' : '');
     const dayEvents = allEvents.filter(e => !e.calHidden && e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
     cell.innerHTML = `<div class="day-num">${d}</div>` +
-      dayEvents.slice(0,2).map(e =>
+      dayEvents.map(e =>
         `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'};cursor:pointer" onclick="openDetail('${e._key}')">${e.title}</span>`
       ).join('') +
-      (dayEvents.length > 2 ? `<span style="font-size:9px;color:var(--muted);cursor:pointer" onclick="showMoreEvents('${dateStr}')"">+${dayEvents.length-2}개</span>` : '');
+      '';
     grid.appendChild(cell);
   }
 }
