@@ -596,6 +596,7 @@ async function deleteEvent() {
 }
 
 function setView(v) {
+  location.hash = v;
   currentView = v;
   document.getElementById('list-view').style.display = v === 'list' ? 'block' : 'none';
   document.getElementById('cal-view').style.display = v === 'cal' ? 'block' : 'none';
@@ -630,5 +631,8 @@ function fmtDate(d) {
 }
 function p(n) { return String(n).padStart(2,'0'); }
 
+if (location.hash === '#cal') setView('cal');
+loadEvents();
+  
 loadEvents();
 </script>
