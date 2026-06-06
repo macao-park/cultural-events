@@ -361,6 +361,9 @@ header {
 <div class="overlay" id="detail-overlay" onclick="closeDetailOutside(event)">
   <div class="modal" id="detail-modal">
     <button class="close-btn" onclick="closeDetail()">✕</button>
+    <div id="detail-img-wrap" style="margin:-2rem -2rem 1.5rem;border-radius:12px 12px 0 0;overflow:hidden;display:none">
+  <img id="detail-img" style="width:100%;height:200px;object-fit:cover">
+</div>
     <h3 id="detail-title"></h3>
     <div class="form-row"><label>분류</label><div id="detail-cat"></div></div>
     <div class="form-row"><label>기간</label><div id="detail-date"></div></div>
@@ -698,6 +701,14 @@ function openDetail(key) {
   const e = allEvents.find(ev => ev._key === key);
   if (!e) return;
   editingId = key;
+  const imgWrap = document.getElementById('detail-img-wrap');
+const imgEl = document.getElementById('detail-img');
+if (e.img) {
+  imgEl.src = e.img;
+  imgWrap.style.display = 'block';
+} else {
+  imgWrap.style.display = 'none';
+}
   document.getElementById('detail-title').textContent = e.title;
   document.getElementById('detail-cat').textContent = e.category;
   document.getElementById('detail-date').textContent = e.startDate + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + e.endDate : '');
