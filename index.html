@@ -474,7 +474,6 @@ function renderList() {
       </div>
       <div>
         <div class="event-dates">${fmtDate(e.startDate)}${e.endDate && e.endDate !== e.startDate ? ' ~<br>' + fmtDate(e.endDate) : ''}</div>
-        <div class="event-status status-${e.status}">${e.status}</div>
       </div>
     </div>`).join('')}</div>`;
 }
