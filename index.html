@@ -412,6 +412,10 @@ header {
     <div class="form-row">
       <label>장소</label>
       <input type="text" id="f-venue" placeholder="예: 부산현대미술관">
+    <div class="form-row">
+      <label>지도용 주소 (선택)</label>
+      <input type="text" id="f-venueAddr" placeholder="예: 부산광역시 해운대구 수영강변대로 120">
+    </div>
     </div>
     <div class="form-row">
       <label>링크 (선택)</label>
@@ -726,6 +730,7 @@ function openModal(key) {
       document.getElementById('f-start').value = e.startDate;
       document.getElementById('f-end').value = e.endDate || '';
       document.getElementById('f-venue').value = e.venue;
+      document.getElementById('f-venueAddr').value = e.venueAddr || '';
       document.getElementById('f-period').value = e.period || '';
       document.getElementById('f-url').value = e.url;
       document.getElementById('f-img').value = e.img || '';
@@ -750,6 +755,7 @@ async function saveEvent() {
     startDate: document.getElementById('f-start').value,
     endDate: document.getElementById('f-end').value,
     venue: document.getElementById('f-venue').value.trim(),
+    venueAddr: document.getElementById('f-venueAddr').value.trim(),
     url: document.getElementById('f-url').value.trim(),
     memo: document.getElementById('f-memo').value.trim(),
     img: document.getElementById('f-img').value.trim(),
