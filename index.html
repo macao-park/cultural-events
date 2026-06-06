@@ -412,6 +412,10 @@ header {
       <input type="url" id="f-url" placeholder="https://...">
     </div>
     <div class="form-row">
+      <label>포스터 이미지 URL (선택)</label>
+      <input type="url" id="f-img" placeholder="https://...이미지주소">
+    </div>
+    <div class="form-row">
       <label>메모 (선택)</label>
       <textarea id="f-memo" placeholder="같이 갈 사람, 티켓 예매 여부 등"></textarea>
     </div>
@@ -530,17 +534,20 @@ function renderList() {
   const list = filtered().sort((a, b) => (a.startDate||'').localeCompare(b.startDate||''));
   if (!list.length) { el.innerHTML = '<p class="empty">등록된 행사가 없어요</p>'; return; }
 el.innerHTML = `<div class="event-list">${list.map(e => `
-    <div class="event-row">
-      <span class="event-badge badge-${e.category}">${e.category}</span>
-      <div>
+    <div class="event-row" style="display:grid;grid-template-columns:${e.img ? '80px 1fr' : '1fr'};gap:0;padding:0;overflow:hidden">
+      ${e.img ? `<img src="${e.img}" style="width:80px;height:100%;object-fit:cover;min-height:90px;border-radius:8px 0 0 8px">` : ''}
+      <div style="padding:12px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
+          <span class="event-badge badge-${e.category}">${e.category}</span>
+          ${isAdmin ? `<button onclick="openDetail('${e._key}')" style="font-size:11px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:10px;padding:2px 8px;cursor:pointer;color:var(--muted)">수정</button>` : ''}
+        </div>
         <div class="event-title">${e.title}</div>
         ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
         ${e.memo ? `<div class="event-venue" style="color:var(--muted)">💬 ${e.memo}</div>` : ''}
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        <div class="event-dates">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''))}</div>
-        ${e.url ? `<a href="${e.url}" target="_blank" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:10px;padding:2px 8px">링크</a>` : ''}
-        ${isAdmin ? `<button onclick="openDetail('${e._key}')" style="font-size:11px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:10px;padding:2px 8px;cursor:pointer;color:var(--muted)">수정</button>` : ''}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <div class="event-dates" style="white-space:nowrap">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''))}</div>
+          ${e.url ? `<a href="${e.url}" target="_blank" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:10px;padding:2px 10px">LINK</a>` : ''}
+        </div>
       </div>
     </div>`).join('')}</div>`;
 }
@@ -629,11 +636,11 @@ function openModal(key) {
       document.getElementById('f-venue').value = e.venue;
       document.getElementById('f-period').value = e.period || '';
       document.getElementById('f-url').value = e.url;
+      document.getElementById('f-img').value = e.img || '';
       document.getElementById('f-memo').value = e.memo;
     }
   } else {
-    ['f-title','f-venue','f-url','f-memo'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('f-cat').value = '전시';
+    ['f-title','f-venue','f-url','f-img','f-memo'].forEach(id => document.getElementById(id).value = '');    document.getElementById('f-cat').value = '전시';
     document.getElementById('f-start').value = '';
     document.getElementById('f-end').value = '';
   }
@@ -653,6 +660,7 @@ async function saveEvent() {
     venue: document.getElementById('f-venue').value.trim(),
     url: document.getElementById('f-url').value.trim(),
     memo: document.getElementById('f-memo').value.trim(),
+    img: document.getElementById('f-img').value.trim(),
   };
   if (!data.title) { alert('행사명을 입력해주세요'); return; }
 
