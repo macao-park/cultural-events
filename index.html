@@ -178,7 +178,7 @@ header {
 .cal-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
 .cal-header h2 { font-size: 1.1rem; font-weight: 400; }
 .cal-nav { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; cursor: pointer; color: var(--muted); font-size: 14px; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; overflow: hidden; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0; overflow: hidden; }
 .cal-dow { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: center; padding: 4px 0; letter-spacing: 0.05em; }
 .cal-cell {
   min-height: 70px;
@@ -564,26 +564,76 @@ function renderCal() {
   document.getElementById('cal-title').textContent = `${calYear}년 ${months[calMonth]}`;
   const grid = document.getElementById('cal-grid');
   while (grid.children.length > 7) grid.removeChild(grid.lastChild);
+
   const firstDay = new Date(calYear, calMonth, 1).getDay();
   const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
   const todayStr = `${today.getFullYear()}-${p(today.getMonth()+1)}-${p(today.getDate())}`;
-  const CHIP_COLORS = { '전시':'#EBF0FA','공연':'#FAE8F2','문화':'#FDF5E6','축제':'#EBF5EF','기타':'#E2DDD4' };
-  const CHIP_TEXT  = { '전시':'#1F4F8A','공연':'#8A2A5A','문화':'#8A5A1A','축제':'#2A6B4A','기타':'#7A746A' };
+
+  const CAT_COLORS = { '전시':'#B5D4F4','공연':'#F4C0D1','문화':'#FAC775','축제':'#9FE1CB','기타':'#D3D1C7' };
+
   for (let i = 0; i < firstDay; i++) {
     const d = document.createElement('div'); d.className = 'cal-cell other-month'; grid.appendChild(d);
   }
+
   for (let d = 1; d <= daysInMonth; d++) {
     const dateStr = `${calYear}-${p(calMonth+1)}-${p(d)}`;
+    const isToday = dateStr === todayStr;
+    const isSun = (new Date(calYear, calMonth, d).getDay() === 0);
+    const isSat = (new Date(calYear, calMonth, d).getDay() === 6);
+    const dayEvents = allEvents.filter(e => !e.calHidden && e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr && (activeFilter === 'all' || e.category === activeFilter) && (showPast || (e.endDate||e.startDate) >= todayStr));
+
     const cell = document.createElement('div');
-    cell.className = 'cal-cell' + (dateStr === todayStr ? ' today' : '');
-    const today2 = new Date().toISOString().slice(0, 10);
-    const dayEvents = allEvents.filter(e => !e.calHidden && e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr && (activeFilter === 'all' || e.category === activeFilter) && (showPast || (e.endDate||e.startDate) >= today2));
-    cell.innerHTML = `<div class="day-num">${d}</div>` +
-      dayEvents.map(e =>
-        `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'};cursor:pointer" onclick="openDetail('${e._key}')">${e.title}</span>`
-      ).join('') +
-      '';
+    cell.className = 'cal-cell' + (isToday ? ' today' : '');
+    cell.style.cssText = 'border:none;background:transparent;padding:4px 2px;min-height:60px;display:flex;flex-direction:column;align-items:center;gap:3px';
+
+    const numColor = isToday ? '#fff' : isSun ? '#C84B2F' : isSat ? '#C84B2F' : 'var(--text)';
+    const numBg = isToday ? '#1A1714' : 'transparent';
+    cell.innerHTML = `<div style="font-family:'DM Mono',monospace;font-size:13px;color:${numColor};background:${numBg};width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:${isToday?'500':'400'}">${d}</div>`;
+
+    if (dayEvents.length > 0) {
+      const dotsWrap = document.createElement('div');
+      dotsWrap.style.cssText = 'display:flex;flex-direction:column;gap:2px;width:100%';
+      dayEvents.slice(0, 3).forEach(e => {
+        const bar = document.createElement('div');
+        bar.style.cssText = `height:4px;border-radius:2px;background:${CAT_COLORS[e.category]||'#D3D1C7'};width:100%;cursor:pointer`;
+        bar.onclick = () => openDetail(e._key);
+        dotsWrap.appendChild(bar);
+      });
+      if (dayEvents.length > 3) {
+        const more = document.createElement('div');
+        more.style.cssText = 'font-size:9px;color:var(--muted);font-family:DM Mono,monospace;text-align:center';
+        more.textContent = `+${dayEvents.length - 3}`;
+        dotsWrap.appendChild(more);
+      }
+      cell.appendChild(dotsWrap);
+    }
     grid.appendChild(cell);
+  }
+
+  // 오늘의 행사 섹션
+  const todayEvents = allEvents.filter(e => !e.calHidden && e.startDate <= todayStr && (e.endDate||e.startDate) >= todayStr);
+  let todaySection = document.getElementById('today-events');
+  if (!todaySection) {
+    todaySection = document.createElement('div');
+    todaySection.id = 'today-events';
+    document.getElementById('cal-view').appendChild(todaySection);
+  }
+  if (todayEvents.length > 0) {
+    todaySection.innerHTML = `
+      <div style="margin-top:1.5rem;border-top:0.5px solid var(--border);padding-top:1rem">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:0.05em">오늘의 행사 · ${todayEvents.length}건</div>
+        ${todayEvents.map(e => `
+          <div onclick="openDetail('${e._key}')" style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);cursor:pointer">
+            <div style="width:4px;height:40px;border-radius:2px;background:${CAT_COLORS[e.category]||'#D3D1C7'};flex-shrink:0;margin-top:2px"></div>
+            <div>
+              <div style="font-family:'Noto Serif KR',serif;font-size:14px;color:var(--text)">${e.title}</div>
+              ${e.venue ? `<div style="font-size:11px;color:var(--muted);margin-top:2px">📍 ${e.venue}</div>` : ''}
+              ${e.url ? `<a href="${e.url}" target="_blank" style="font-size:10px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none">링크 →</a>` : ''}
+            </div>
+          </div>`).join('')}
+      </div>`;
+  } else {
+    todaySection.innerHTML = '';
   }
 }
 
