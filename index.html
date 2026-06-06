@@ -472,11 +472,7 @@ async function apiDelete(key) {
   await fetch(DB + '/' + key + '.json', { method: 'DELETE' });
 }
 
-function updateCount() {
-  const f = filtered();
-  document.getElementById('event-count').textContent =
-    `— 총 ${f.length}개 행사 · 예정 ${f.filter(e => e.status === '예정').length}개`;
-}
+function updateCount() {}
 
 function filtered() {
   const visible = allEvents.filter(e => !e.hidden);
