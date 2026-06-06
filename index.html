@@ -310,6 +310,13 @@ header {
     (<a href="https://github.com" target="_blank">설정 가이드 보기</a>)
   </div>
 
+<p style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);margin-bottom:1.5rem;letter-spacing:0.04em">일상이 예술이 되는 순간</p>
+<div style="margin-bottom:1rem;position:relative">
+  <input type="text" id="search-input" placeholder="행사명, 장소 검색..." oninput="renderCurrent()"
+    style="width:100%;padding:9px 12px 9px 36px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-family:'Noto Serif KR',serif;font-size:14px;color:var(--text);outline:none">
+  <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px">🔍</span>
+</div>
+  
   <div class="controls">
     <div class="tabs">
       <button class="tab-btn active" onclick="setView('list')">목록</button>
@@ -484,9 +491,14 @@ function togglePast() {
 function updateCount() {}
 
 function filtered() {
-  const today = new Date().toISOString().slice(0, 10);
-  const visible = allEvents.filter(e => !e.hidden && (showPast || (e.endDate || e.startDate) >= today));
-  return activeFilter === 'all' ? visible : visible.filter(e => e.category === activeFilter);
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const query = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+  let list = allEvents.filter(e => !e.hidden && !e.calHidden &&
+    (showPast || (e.endDate || e.startDate) >= todayStr) &&
+    (activeFilter === 'all' || e.category === activeFilter) &&
+    (!query || e.title?.toLowerCase().includes(query) || e.venue?.toLowerCase().includes(query))
+  );
+  return list;
 }
 
 function renderList() {
