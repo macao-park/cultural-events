@@ -178,7 +178,7 @@ header {
 .cal-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
 .cal-header h2 { font-size: 1.1rem; font-weight: 400; }
 .cal-nav { background: none; border: 1px solid var(--border); border-radius: 4px; padding: 4px 10px; cursor: pointer; color: var(--muted); font-size: 14px; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; overflow: hidden; }
 .cal-dow { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: center; padding: 4px 0; letter-spacing: 0.05em; }
 .cal-cell {
   min-height: 70px;
@@ -502,7 +502,8 @@ function renderList() {
 }
 
 function showMoreEvents(dateStr) {
-  const dayEvents = allEvents.filter(e => !e.calHidden && e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
+  const visibleCats = activeFilter === 'all' ? null : activeFilter;
+  const dayEvents = allEvents.filter(e => !e.calHidden && e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr && (!visibleCats || e.category === visibleCats));
   const [y,m,d] = dateStr.split('-');
   alert(`${m}/${d} 행사 목록:\n\n` + dayEvents.map(e => `• ${e.title}`).join('\n'));
 }
