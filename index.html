@@ -529,15 +529,18 @@ function renderList() {
   const el = document.getElementById('list-view');
   const list = filtered().sort((a, b) => (a.startDate||'').localeCompare(b.startDate||''));
   if (!list.length) { el.innerHTML = '<p class="empty">등록된 행사가 없어요</p>'; return; }
-  el.innerHTML = `<div class="event-list">${list.map(e => `
-    <div class="event-row" onclick="openDetail('${e._key}')">
+el.innerHTML = `<div class="event-list">${list.map(e => `
+    <div class="event-row">
       <span class="event-badge badge-${e.category}">${e.category}</span>
       <div>
         <div class="event-title">${e.title}</div>
         ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
+        ${e.memo ? `<div class="event-venue" style="color:var(--muted)">💬 ${e.memo}</div>` : ''}
       </div>
-      <div>
-        <div class="event-dates" style="white-space:nowrap">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''))}</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="event-dates">${e.period || (fmtDate(e.startDate) + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''))}</div>
+        ${e.url ? `<a href="${e.url}" target="_blank" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:10px;padding:2px 8px">링크</a>` : ''}
+        ${isAdmin ? `<button onclick="openDetail('${e._key}')" style="font-size:11px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:10px;padding:2px 8px;cursor:pointer;color:var(--muted)">수정</button>` : ''}
       </div>
     </div>`).join('')}</div>`;
 }
