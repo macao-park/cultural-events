@@ -400,7 +400,7 @@ calYear = today.getFullYear();
 calMonth = today.getMonth();
 
 async function loadEvents() {
-  const res = await fetch(SHEETDB_URL + '?sheet=행사목록');
+  const res = await fetch(SHEETDB_URL + '');
   const rows = await res.json();
   allEvents = Array.isArray(rows) ? rows : [];
   updateCount();
@@ -408,7 +408,7 @@ async function loadEvents() {
 }
 
 async function apiAdd(data) {
-  const res = await fetch(SHEETDB_URL + '?sheet=행사목록', {
+  const res = await fetch(SHEETDB_URL + '', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ data: [data] })
@@ -417,7 +417,7 @@ async function apiAdd(data) {
 }
 
 async function apiUpdate(id, data) {
-  const res = await fetch(SHEETDB_URL + '/id/' + id + '?sheet=행사목록', {
+  const res = await fetch(SHEETDB_URL + '/id/' + id, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ data })
@@ -426,7 +426,7 @@ async function apiUpdate(id, data) {
 }
 
 async function apiDelete(id) {
-  await fetch(SHEETDB_URL + '/id/' + id + '?sheet=행사목록', { method: 'DELETE' });
+  await fetch(SHEETDB_URL + '/id/' + id, { method: 'DELETE' });
 }
 
 function updateCount() {
