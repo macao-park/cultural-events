@@ -301,6 +301,7 @@ header {
   <header>
     <div>
       <h1 class="site-title">내 <em>문화행사</em> 일정</h1>
+      <button onclick="checkAdmin()" id="admin-btn" style="font-family:'DM Mono',monospace;font-size:11px;background:none;border:1px solid var(--border);border-radius:4px;padding:4px 10px;cursor:pointer;color:var(--muted)">관리자</button>
       <p class="meta-line" id="event-count">— 행사 불러오는 중</p>
     </div>
   </header>
@@ -411,7 +412,8 @@ header {
 
 <script>
 const DB = 'https://cultural-events-5fcd8-default-rtdb.firebaseio.com/events';
-
+const ADMIN_PW = '1234';
+let isAdmin = false;
 let allEvents = [];
 let activeFilter = 'all';
 let currentView = 'list';
@@ -519,6 +521,8 @@ function openDetail(key) {
   const memoRow = document.getElementById('detail-memo-row');
   if (e.memo) { document.getElementById('detail-memo').textContent = e.memo; memoRow.style.display=''; }
   else { memoRow.style.display='none'; }
+  document.getElementById('detail-delete-btn').style.display = isAdmin ? 'block' : 'none';
+  document.querySelector('#detail-modal .btn-primary').style.display = isAdmin ? 'block' : 'none';
   document.getElementById('detail-overlay').classList.add('open');
 }
 
@@ -631,6 +635,26 @@ function fmtDate(d) {
 }
 function p(n) { return String(n).padStart(2,'0'); }
 
+function checkAdmin() {
+  const pw = prompt('관리자 비밀번호를 입력하세요 (취소하면 일반 모드)');
+  if (pw === ADMIN_PW) {
+    isAdmin = true;
+    document.getElementById('admin-btn').textContent = '관리자 ✓';
+    document.getElementById('admin-btn').style.color = 'var(--accent)';
+  }
+  renderCurrent();
+}
+
+function renderAdminUI() {
+  document.querySelector('.add-fab').style.display = isAdmin ? 'flex' : 'none';
+}
+
+function renderCurrent() {
+  renderAdminUI();  // ← 추가
+  if (currentView === 'list') renderList();
+  else renderCal();
+}
+  
 if (location.hash === '#cal') setView('cal');
 loadEvents();
   
