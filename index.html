@@ -549,6 +549,7 @@ el.innerHTML = `<div class="event-list">${list.map(e => `
       <div style="padding:12px 14px">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
           <span class="event-badge badge-${e.category}">${e.category}</span>
+${isAdmin ? `<button onclick="event.stopPropagation();if(confirm('삭제할까요?')){apiDelete('${e._key}');allEvents=allEvents.filter(ev=>ev._key!=='${e._key}');renderCurrent();}" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px">🗑️</button>` : ''}
           ${isAdmin ? `<button onclick="openDetail('${e._key}')" style="font-size:11px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:10px;padding:2px 8px;cursor:pointer;color:var(--muted)">수정</button><button onclick="if(confirm('삭제할까요?')){apiDelete('${e._key}');allEvents=allEvents.filter(ev=>ev._key!=='${e._key}');renderCurrent();}" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px">🗑️</button>` : ''}        </div>
         <div class="event-title">${e.title}</div>
         ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
