@@ -472,7 +472,7 @@ function renderCal() {
     const dateStr = `${calYear}-${p(calMonth+1)}-${p(d)}`;
     const cell = document.createElement('div');
     cell.className = 'cal-cell' + (dateStr === todayStr ? ' today' : '');
-    const dayEvents = allEvents.filter(e => e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
+    const dayEvents = filtered().filter(e => e.startDate <= dateStr && (e.endDate||e.startDate) >= dateStr);
     cell.innerHTML = `<div class="day-num">${d}</div>` +
       dayEvents.slice(0,2).map(e =>
         `<span class="cal-event-chip" style="background:${CHIP_COLORS[e.category]||'#E2DDD4'};color:${CHIP_TEXT[e.category]||'#7A746A'}">${e.title}</span>`
