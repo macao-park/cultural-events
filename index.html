@@ -485,7 +485,6 @@ function openModal(key) {
     if (e) {
       document.getElementById('f-title').value = e.title;
       document.getElementById('f-cat').value = e.category;
-      document.getElementById('f-status').value = e.status;
       document.getElementById('f-start').value = e.startDate;
       document.getElementById('f-end').value = e.endDate || '';
       document.getElementById('f-venue').value = e.venue;
@@ -495,7 +494,6 @@ function openModal(key) {
   } else {
     ['f-title','f-venue','f-url','f-memo'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('f-cat').value = '전시';
-    document.getElementById('f-status').value = '예정';
     document.getElementById('f-start').value = '';
     document.getElementById('f-end').value = '';
   }
@@ -509,7 +507,6 @@ async function saveEvent() {
   const data = {
     title: document.getElementById('f-title').value.trim(),
     category: document.getElementById('f-cat').value,
-    status: document.getElementById('f-status').value,
     startDate: document.getElementById('f-start').value,
     endDate: document.getElementById('f-end').value,
     venue: document.getElementById('f-venue').value.trim(),
