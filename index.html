@@ -402,6 +402,22 @@ header {
       <textarea id="f-memo" placeholder="같이 갈 사람, 티켓 예매 여부 등"></textarea>
     </div>
 
+    <div class="form-row" id="repeat-row">
+  <label>반복 (선택)</label>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+    <label style="font-size:13px;display:flex;align-items:center;gap:4px"><input type="checkbox" value="0"> 일</label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:4px"><input type="checkbox" value="1"> 월</label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:4px"><input type="checkbox" value="2"> 화</label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:4px"><input type="checkbox" value="3"> 수</label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:4px"><input type="checkbox" value="4"> 목</label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:4px"><input type="checkbox" value="5"> 금</label>
+    <label style="font-size:13px;display:flex;align-items:center;gap:4px"><input type="checkbox" value="6"> 토</label>
+  </div>
+  <div style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">체크하면 시작일~종료일 사이 해당 요일마다 자동 등록</div>
+</div>
+
+
+    
     <div class="modal-actions">
       <button class="btn btn-danger" id="delete-btn" onclick="deleteEvent()" style="display:none">삭제</button>
       <button class="btn" onclick="closeModal()">취소</button>
@@ -578,14 +594,36 @@ async function saveEvent() {
     memo: document.getElementById('f-memo').value.trim(),
   };
   if (!data.title) { alert('행사명을 입력해주세요'); return; }
+
+  // 반복 요일 체크
+  const checkedDays = [...document.querySelectorAll('#repeat-row input[type=checkbox]:checked')]
+    .map(cb => parseInt(cb.value));
+
   if (editingId) {
+    // 수정은 반복 없이
     await apiUpdate(editingId, data);
     const idx = allEvents.findIndex(e => e._key === editingId);
     if (idx > -1) allEvents[idx] = {...data, _key: editingId};
+  } else if (checkedDays.length > 0 && data.startDate && data.endDate) {
+    // 반복 등록
+    const start = new Date(data.startDate);
+    const end = new Date(data.endDate);
+    let count = 0;
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      if (checkedDays.includes(d.getDay())) {
+        const dateStr = d.toISOString().slice(0, 10);
+        await apiAdd({ ...data, startDate: dateStr, endDate: dateStr });
+        count++;
+      }
+    }
+    alert(`${count}개 행사가 등록됐어요!`);
+    await loadEvents();
   } else {
+    // 일반 등록
     await apiAdd(data);
     await loadEvents();
   }
+
   closeModal();
   updateCount();
   renderCurrent();
