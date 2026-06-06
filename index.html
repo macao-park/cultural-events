@@ -323,6 +323,7 @@ header {
       <button class="filter-btn" data-cat="축제" onclick="setFilter(this,'축제')">축제</button>
       <button class="filter-btn" data-cat="기타" onclick="setFilter(this,'기타')">기타</button>
     </div>
+    <button id="past-btn" onclick="togglePast()" style="padding:5px 12px;font-size:12px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer">지난 행사 보기</button>
   </div>
 
   <div id="list-view"><div class="loading">불러오는 중...</div></div>
@@ -440,6 +441,7 @@ let activeFilter = 'all';
 let currentView = 'list';
 let calYear, calMonth;
 let editingId = null;
+let showPast = false;
 const today = new Date();
 calYear = today.getFullYear();
 calMonth = today.getMonth();
@@ -471,11 +473,19 @@ async function apiUpdate(key, data) {
 async function apiDelete(key) {
   await fetch(DB + '/' + key + '.json', { method: 'DELETE' });
 }
-
+function togglePast() {
+  showPast = !showPast;
+  const btn = document.getElementById('past-btn');
+  btn.textContent = showPast ? '지난 행사 숨기기' : '지난 행사 보기';
+  btn.style.color = showPast ? 'var(--accent)' : 'var(--muted)';
+  btn.style.borderColor = showPast ? 'var(--accent)' : 'var(--border)';
+  renderCurrent();
+}
 function updateCount() {}
 
 function filtered() {
-  const visible = allEvents.filter(e => !e.hidden);
+  const today = new Date().toISOString().slice(0, 10);
+  const visible = allEvents.filter(e => !e.hidden && (showPast || (e.endDate || e.startDate) >= today));
   return activeFilter === 'all' ? visible : visible.filter(e => e.category === activeFilter);
 }
 
