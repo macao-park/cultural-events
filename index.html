@@ -512,7 +512,9 @@ function openDetail(key) {
   document.getElementById('detail-title').textContent = e.title;
   document.getElementById('detail-cat').textContent = e.category;
   document.getElementById('detail-date').textContent = e.startDate + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + e.endDate : '');
-  document.getElementById('detail-venue').textContent = e.venue || '—';
+  document.getElementById('detail-venue').innerHTML = e.venue 
+  ? `${e.venue} <button onclick="navigator.clipboard.writeText('${e.venue}').then(()=>alert('주소가 복사됐어요!'))" style="margin-left:8px;padding:3px 8px;font-size:11px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:4px;cursor:pointer;color:var(--muted)">복사</button>`
+  : '—';
   const urlRow = document.getElementById('detail-url-row');
   const urlEl = document.getElementById('detail-url');
   if (e.url) { urlEl.innerHTML = `<a href="${e.url}" target="_blank" style="display:inline-block;padding:6px 14px;background:var(--text);color:var(--bg);border-radius:6px;font-family:'DM Mono',monospace;font-size:12px;text-decoration:none">🔗 링크 열기</a>`; urlRow.style.display=''; }
