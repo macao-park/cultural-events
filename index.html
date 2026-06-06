@@ -388,7 +388,7 @@ header {
 </div>
 
 <script>
-const SHEETDB_URL = 'https://sheetdb.io/api/v1/5k2qok22bjh0t';
+const DB = 'https://cultural-events-5fcd8-default-rtdb.firebaseio.com/events';
 
 let allEvents = [];
 let activeFilter = 'all';
@@ -400,33 +400,31 @@ calYear = today.getFullYear();
 calMonth = today.getMonth();
 
 async function loadEvents() {
-  const res = await fetch(SHEETDB_URL + '');
-  const rows = await res.json();
-  allEvents = Array.isArray(rows) ? rows : [];
+  const res = await fetch(DB + '.json');
+  const data = await res.json();
+  allEvents = data ? Object.entries(data).map(([k,v]) => ({...v, _key: k})) : [];
   updateCount();
   renderCurrent();
 }
 
 async function apiAdd(data) {
-  const res = await fetch(SHEETDB_URL + '', {
+  await fetch(DB + '.json', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data: [data] })
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
   });
-  return res.json();
 }
 
-async function apiUpdate(id, data) {
-  const res = await fetch(SHEETDB_URL + '/id/' + id, {
+async function apiUpdate(key, data) {
+  await fetch(DB + '/' + key + '.json', {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data })
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
   });
-  return res.json();
 }
 
-async function apiDelete(id) {
-  await fetch(SHEETDB_URL + '/id/' + id, { method: 'DELETE' });
+async function apiDelete(key) {
+  await fetch(DB + '/' + key + '.json', { method: 'DELETE' });
 }
 
 function updateCount() {
@@ -444,7 +442,7 @@ function renderList() {
   const list = filtered().sort((a, b) => (a.startDate||'').localeCompare(b.startDate||''));
   if (!list.length) { el.innerHTML = '<p class="empty">등록된 행사가 없어요</p>'; return; }
   el.innerHTML = `<div class="event-list">${list.map(e => `
-    <div class="event-row" onclick="openModal('${e.id}')">
+    <div class="event-row" onclick="openModal('${e._key}')">
       <span class="event-badge badge-${e.category}">${e.category}</span>
       <div>
         <div class="event-title">${e.title}</div>
@@ -484,12 +482,12 @@ function renderCal() {
   }
 }
 
-function openModal(id) {
-  editingId = id || null;
-  document.getElementById('modal-title').textContent = id ? '행사 수정' : '새 행사 추가';
-  document.getElementById('delete-btn').style.display = id ? 'block' : 'none';
-  if (id) {
-    const e = allEvents.find(ev => ev.id == id);
+function openModal(key) {
+  editingId = key || null;
+  document.getElementById('modal-title').textContent = key ? '행사 수정' : '새 행사 추가';
+  document.getElementById('delete-btn').style.display = key ? 'block' : 'none';
+  if (key) {
+    const e = allEvents.find(ev => ev._key === key);
     if (e) {
       document.getElementById('f-title').value = e.title;
       document.getElementById('f-cat').value = e.category;
@@ -515,7 +513,6 @@ function closeModalOutside(e) { if (e.target === document.getElementById('overla
 
 async function saveEvent() {
   const data = {
-    id: editingId || Date.now().toString(),
     title: document.getElementById('f-title').value.trim(),
     category: document.getElementById('f-cat').value,
     status: document.getElementById('f-status').value,
@@ -528,11 +525,11 @@ async function saveEvent() {
   if (!data.title) { alert('행사명을 입력해주세요'); return; }
   if (editingId) {
     await apiUpdate(editingId, data);
-    const idx = allEvents.findIndex(e => e.id == editingId);
-    if (idx > -1) allEvents[idx] = data;
+    const idx = allEvents.findIndex(e => e._key === editingId);
+    if (idx > -1) allEvents[idx] = {...data, _key: editingId};
   } else {
     await apiAdd(data);
-    allEvents.push(data);
+    await loadEvents();
   }
   closeModal();
   updateCount();
@@ -542,7 +539,7 @@ async function saveEvent() {
 async function deleteEvent() {
   if (!confirm('이 행사를 삭제할까요?')) return;
   await apiDelete(editingId);
-  allEvents = allEvents.filter(e => e.id != editingId);
+  allEvents = allEvents.filter(e => e._key !== editingId);
   closeModal();
   updateCount();
   renderCurrent();
