@@ -580,7 +580,7 @@ function showMoreEvents(dateStr) {
     level: 8
   });
 
-  const CAT_COLORS = { '전시':'#B5D4F4','공연':'#F4C0D1','문화':'#FAC775','축제':'#9FE1CB','기타':'#D3D1C7' };
+  const CAT_COLORS = { '전시':'#6C5CE7','공연':'#E17055','문화':'#00B894','축제':'#FDCB6E','기타':'#636E72' };
   const geocoder = new kakao.maps.services.Geocoder();
 
   const visible = allEvents.filter(e => !e.hidden && !e.calHidden);
@@ -591,7 +591,7 @@ function showMoreEvents(dateStr) {
       if (status !== kakao.maps.services.Status.OK) return;
       const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
       const color = CAT_COLORS[e.category] || '#7A746A';
-
+      const textColor = e.category === '축제' ? '#1A1714' : '#fff';
       const content = `
   <div onclick="showMapCard('${e._key}')" style="cursor:pointer;display:flex;flex-direction:column;align-items:center">
     <div style="width:44px;height:44px;border-radius:50%;background:${color};display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-family:'DM Mono',monospace;box-shadow:0 2px 6px rgba(0,0,0,0.2)">${e.category}</div>
