@@ -66,7 +66,7 @@ header {
 }
 
 /* ── tabs & filter ── */
-.controls { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
+.controls { display: flex; align-items: center; justify-content: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 12px; }
 
 .tabs { display: flex; gap: 0; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
 .tab-btn {
@@ -322,7 +322,7 @@ header {
       <button class="tab-btn" onclick="setView('map')">지도</button>
     </div>
     <button onclick="const p=document.getElementById('filter-panel');p.style.display=p.style.display==='none'?'flex':'none'" style="background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:16px;margin-left:4px">🎛️</button>
-    <div class="filters" id="filter-panel" style="display:none">
+    <div class="filters" id="filter-panel" style="display:none;flex-wrap:wrap;gap:6px;align-items:center">
       <button class="filter-btn active" data-cat="all" onclick="setFilter(this,'all')">전체</button>
       <button class="filter-btn" data-cat="전시" onclick="setFilter(this,'전시')">전시</button>
       <button class="filter-btn" data-cat="공연" onclick="setFilter(this,'공연')">공연</button>
