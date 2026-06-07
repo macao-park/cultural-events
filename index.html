@@ -349,6 +349,10 @@ header {
       <div class="cal-dow">일</div><div class="cal-dow">월</div><div class="cal-dow">화</div>
       <div class="cal-dow">수</div><div class="cal-dow">목</div><div class="cal-dow">금</div><div class="cal-dow">토</div>
     </div>
+    <div id="long-events-section" style="display:none;margin-top:1.5rem;border-top:0.5px solid var(--border);padding-top:1rem">
+  <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:0.05em">📌 이번 달 계속 진행 중</div>
+  <div id="long-events-list"></div>
+    </div>
   </div>
   <div id="map-view" style="display:none;position:relative">
   <div id="kakao-map" style="width:100%;height:500px;border-radius:12px;overflow:hidden"></div>
@@ -718,6 +722,26 @@ sec.innerHTML = `
 
     grid.appendChild(cell);
   }
+  const longEvents = allEvents.filter(e => {
+  if (!e.startDate || !e.endDate || e.hidden || e.calHidden) return false;
+  const diff = (new Date(e.endDate) - new Date(e.startDate)) / (1000*60*60*24);
+  return diff >= 8;
+});
+const sec = document.getElementById('long-events-section');
+const list = document.getElementById('long-events-list');
+if (longEvents.length > 0) {
+  sec.style.display = 'block';
+  list.innerHTML = longEvents.map(e => `
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);cursor:pointer" onclick="openDetail('${e._key}')">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="event-badge badge-${e.category}">${e.category}</span>
+        <span style="font-size:14px">${e.title}</span>
+      </div>
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${fmtDate(e.startDate)} ~ ${fmtDate(e.endDate)}</span>
+    </div>`).join('');
+} else {
+  sec.style.display = 'none';
+}
 }
 
 function openDetail(key) {
