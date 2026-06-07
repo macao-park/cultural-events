@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=4ab9aef133dd7020f01301238c4d622d&libraries=services"></script>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=...&libraries=services,clusterer"></script>
 </head>
 <style>
 :root {
@@ -590,6 +590,11 @@ function showMoreEvents(dateStr) {
   const geocoder = new kakao.maps.services.Geocoder();
 
   const visible = allEvents.filter(e => !e.hidden && !e.calHidden);
+    const clusterer = new kakao.maps.MarkerClusterer({
+  map: map,
+  averageCenter: true,
+  minLevel: 6
+});
 
   visible.forEach(e => {
     if (!e.venue) return;
@@ -605,6 +610,7 @@ function showMoreEvents(dateStr) {
     <div style="width:6px;height:6px;border-radius:50%;background:${color}"></div>
   </div>`;
       const overlay = new kakao.maps.CustomOverlay({ map, position: coords, content, yAnchor: 1 });
+      clusterer.addMarker(new kakao.maps.Marker({ position: coords }));
     });
   });
     window.showMapCard = function(key) {
