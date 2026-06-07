@@ -590,11 +590,6 @@ function showMoreEvents(dateStr) {
   const geocoder = new kakao.maps.services.Geocoder();
 
   const visible = allEvents.filter(e => !e.hidden && !e.calHidden);
-    const clusterer = new kakao.maps.MarkerClusterer({
-  map: map,
-  averageCenter: true,
-  minLevel: 6
-});
 
   visible.forEach(e => {
     if (!e.venue) return;
@@ -610,7 +605,6 @@ function showMoreEvents(dateStr) {
     <div style="width:6px;height:6px;border-radius:50%;background:${color}"></div>
   </div>`;
       const overlay = new kakao.maps.CustomOverlay({ map, position: coords, content, yAnchor: 1 });
-      clusterer.addMarker(new kakao.maps.Marker({ position: coords }));
     });
   });
     window.showMapCard = function(key) {
