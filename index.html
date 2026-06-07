@@ -590,12 +590,20 @@ function showMoreEvents(dateStr) {
   const geocoder = new kakao.maps.services.Geocoder();
 
   const visible = allEvents.filter(e => !e.hidden && !e.calHidden);
-
+  const usedCoords = [];
+    
   visible.forEach(e => {
     if (!e.venue) return;
     geocoder.addressSearch(e.venueAddr || e.venue, (result, status) => {
       if (status !== kakao.maps.services.Status.OK) return;
-      const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+      let lat = parseFloat(result[0].y);
+      let lng = parseFloat(result[0].x);
+      while (usedCoords.some(c => Math.abs(c.lat - lat) < 0.003 && Math.abs(c.lng - lng) < 0.003)) {
+        lat += 0.003;
+        lng += 0.003;
+      }
+      usedCoords.push({ lat, lng });
+      const coords = new kakao.maps.LatLng(lat, lng);
       const color = CAT_COLORS[e.category] || '#7A746A';
       const textColor = e.category === '축제' ? '#1A1714' : '#fff';
       const content = `
