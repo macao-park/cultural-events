@@ -321,21 +321,24 @@ header {
       <button class="tab-btn" onclick="setView('cal')">캘린더</button>
       <button class="tab-btn" onclick="setView('map')">지도</button>
     </div>
-    <div class="filters">
+    <button onclick="const p=document.getElementById('filter-panel');p.style.display=p.style.display==='none'?'flex':'none'" style="background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:16px;margin-left:4px">🎛️</button>
+    <div class="filters" id="filter-panel" style="display:none">
       <button class="filter-btn active" data-cat="all" onclick="setFilter(this,'all')">전체</button>
       <button class="filter-btn" data-cat="전시" onclick="setFilter(this,'전시')">전시</button>
       <button class="filter-btn" data-cat="공연" onclick="setFilter(this,'공연')">공연</button>
       <button class="filter-btn" data-cat="문화" onclick="setFilter(this,'문화')">문화</button>
       <button class="filter-btn" data-cat="축제" onclick="setFilter(this,'축제')">축제</button>
       <button class="filter-btn" data-cat="기타" onclick="setFilter(this,'기타')">기타</button>
-    </div>
+
     <button id="past-btn" onclick="togglePast()" style="padding:5px 12px;font-size:12px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer">지난 행사 보기</button>
     <div id="search-wrap" style="display:inline-flex;align-items:center;gap:6px">
   <input type="text" id="search-input" placeholder="검색..." oninput="renderCurrent()"
     style="width:0;padding:0;border:none;background:transparent;font-family:'Pretendard',serif;font-size:13px;color:var(--text);outline:none;transition:width 0.3s,padding 0.3s;overflow:hidden">
   <button onclick="toggleSearch()" id="search-btn"
     style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px">🔍</button>
-</div>
+    </div>
+    </div>
+    </div>
   </div>
 
   <div id="list-view"><div class="loading">불러오는 중...</div></div>
