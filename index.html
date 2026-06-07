@@ -6,6 +6,7 @@
 <title>BMS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=4ab9aef133dd7020f01301238c4d622d&libraries=services"></script>
 </head>
@@ -31,7 +32,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Noto Serif KR', Georgia, serif;
+  font-family: 'Pretendard', -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -207,7 +208,7 @@ header {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
-  font-family: 'Noto Serif KR', serif;
+  font-family: 'Pretendard', serif;
   font-weight: 400;
 }
 
@@ -239,7 +240,7 @@ header {
   border: 1px solid var(--border);
   border-radius: 6px;
   background: var(--bg);
-  font-family: 'Noto Serif KR', serif;
+  font-family: 'Pretendard', serif;
   font-size: 14px;
   color: var(--text);
   outline: none;
@@ -331,7 +332,7 @@ header {
     <button id="past-btn" onclick="togglePast()" style="padding:5px 12px;font-size:12px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer">지난 행사 보기</button>
     <div id="search-wrap" style="display:inline-flex;align-items:center;gap:6px">
   <input type="text" id="search-input" placeholder="검색..." oninput="renderCurrent()"
-    style="width:0;padding:0;border:none;background:transparent;font-family:'Noto Serif KR',serif;font-size:13px;color:var(--text);outline:none;transition:width 0.3s,padding 0.3s;overflow:hidden">
+    style="width:0;padding:0;border:none;background:transparent;font-family:'Pretendard',serif;font-size:13px;color:var(--text);outline:none;transition:width 0.3s,padding 0.3s;overflow:hidden">
   <button onclick="toggleSearch()" id="search-btn"
     style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px">🔍</button>
 </div>
