@@ -559,7 +559,7 @@ el.innerHTML = `<div class="event-list">${list.map(e => `
       <div style="padding:12px 14px">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px">
           <span class="event-badge badge-${e.category}">${e.category}</span>
-          ${isAdmin ? `<button onclick="openDetail('${e._key}')" style="font-size:11px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:10px;padding:2px 8px;cursor:pointer;color:var(--muted)">수정</button><button onclick="if(confirm('삭제할까요?')){apiDelete('${e._key}');allEvents=allEvents.filter(ev=>ev._key!=='${e._key}');renderCurrent();}" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px">🗑️</button>` : ''}        </div>
+          ${isAdmin ? `<button onclick="openLongEventPopup('${e._key}')" style="font-size:11px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:10px;padding:2px 8px;cursor:pointer;color:var(--muted)">수정</button><button onclick="if(confirm('삭제할까요?')){apiDelete('${e._key}');allEvents=allEvents.filter(ev=>ev._key!=='${e._key}');renderCurrent();}" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px">🗑️</button>` : ''}        </div>
         <div class="event-title">${e.title}</div>
         ${e.venue ? `<div class="event-venue">📍 ${e.venue} <button onclick="event.stopPropagation();navigator.clipboard.writeText('${e.venue}').then(()=>alert('복사됐어요!'))" style="font-size:10px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:4px;padding:1px 6px;cursor:pointer;color:var(--muted);margin-left:4px">복사</button></div>` : ''}
         ${e.memo ? `<div class="event-venue" style="color:var(--muted)">💬 ${e.memo}</div>` : ''}
@@ -927,6 +927,25 @@ function fmtDate(d) {
   const [y,m,day] = d.split('-');
   return `${m}/${day}`;
 }
+  function openLongEventPopup(key) {
+  const e = allEvents.find(ev => ev._key === key);
+  if (!e) return;
+  document.getElementById('lep-cat').textContent = e.category;
+  document.getElementById('lep-cat').className = `event-badge badge-${e.category}`;
+  document.getElementById('lep-title').textContent = e.title;
+  document.getElementById('lep-date').textContent = e.startDate + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + e.endDate : '');
+  const venueEl = document.getElementById('lep-venue');
+  venueEl.innerHTML = e.venue ? `📍 ${e.venue} <button onclick="navigator.clipboard.writeText('${e.venue}').then(()=>alert('복사됐어요!'))" style="font-size:10px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:4px;padding:1px 6px;cursor:pointer;color:var(--muted);margin-left:4px">복사</button>` : '';
+  const linkEl = document.getElementById('lep-link');
+  if (e.url) { linkEl.href = e.url; linkEl.style.display = 'inline-block'; }
+  else { linkEl.style.display = 'none'; }
+  const imgWrap = document.getElementById('lep-img-wrap');
+  const imgEl = document.getElementById('lep-img');
+  if (e.img) { imgEl.src = e.img; imgWrap.style.display = 'block'; }
+  else { imgWrap.style.display = 'none'; }
+  const popup = document.getElementById('long-event-popup');
+  popup.style.display = 'flex';
+}
 function p(n) { return String(n).padStart(2,'0'); }
 
 function checkAdmin() {
@@ -972,4 +991,19 @@ else setView('cal');
 loadEvents();
   
 </script>
+  <div id="long-event-popup" style="display:none;position:fixed;inset:0;background:rgba(26,23,20,0.5);z-index:200;align-items:center;justify-content:center">
+  <div style="background:var(--surface);border-radius:12px;width:100%;max-width:480px;margin:1rem;overflow:hidden;position:relative">
+    <button onclick="document.getElementById('long-event-popup').style.display='none'" style="position:absolute;top:0.75rem;right:0.75rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);z-index:10">✕</button>
+    <div id="lep-img-wrap" style="display:none">
+      <img id="lep-img" style="width:100%;height:240px;object-fit:contain;background:#F5F2EC">
+    </div>
+    <div style="padding:1.25rem 1.5rem">
+      <span id="lep-cat" class="event-badge"></span>
+      <div id="lep-title" style="font-size:16px;margin:8px 0 6px"></div>
+      <div id="lep-date" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:6px"></div>
+      <div id="lep-venue" style="font-size:12px;color:var(--muted);margin-bottom:10px"></div>
+      <a id="lep-link" href="#" target="_blank" style="display:none;font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:10px;padding:3px 12px">LINK</a>
+    </div>
+  </div>
+</div>
 </body>
