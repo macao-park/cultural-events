@@ -341,11 +341,11 @@ header {
     <button class="filter-btn" data-cat="축제" onclick="setFilter(this,'축제')">축제</button>
     <button class="filter-btn" data-cat="기타" onclick="setFilter(this,'기타')">기타</button>
     <button id="past-btn" onclick="togglePast()" style="padding:5px 12px;font-size:12px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer">지난 행사 보기</button>
+  </div>
     <div id="search-wrap" style="display:inline-flex;align-items:center;gap:6px">
       <input type="text" id="search-input" placeholder="검색..." oninput="renderCurrent()" style="width:0;padding:0;border:none;background:transparent;font-family:'Pretendard',serif;font-size:16px;color:var(--text);outline:none;transition:width 0.3s,padding 0.3s">
       <button onclick="toggleSearch();return false;" id="search-btn" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px">🔍</button>
     </div>
-  </div>
 </div>
 
   <div id="list-view"><div class="loading">불러오는 중...</div></div>
