@@ -579,20 +579,6 @@ function toggleSearchView() {
     if (longSection) longSection.style.display = '';
   }
 }
-    
-  else {
-    input.style.width = '0';
-    input.style.padding = '0';
-    input.style.border = 'none';
-    input.style.background = 'transparent';
-    input.value = '';
-    if (calGrid) calGrid.style.display = '';
-    if (calHeader) calHeader.style.display = '';
-    renderCurrent();
-    const todayEvents = document.getElementById('today-events');
-    if (todayEvents) todayEvents.style.display = '';
-  }
-}
 
 function renderSearchResults() {
   const query = document.getElementById('search-input').value.trim().toLowerCase();
