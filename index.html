@@ -341,11 +341,12 @@ header {
     <button class="filter-btn" data-cat="축제" onclick="setFilter(this,'축제')">축제</button>
     <button class="filter-btn" data-cat="기타" onclick="setFilter(this,'기타')">기타</button>
     <button id="past-btn" onclick="togglePast()" style="padding:5px 12px;font-size:12px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer">지난 행사 보기</button>
-  </div>
     <div id="search-wrap" style="display:inline-flex;align-items:center;gap:6px">
-      <input type="text" id="search-input" placeholder="검색..." oninput="renderCurrent()" style="width:0;padding:0;border:none;background:transparent;font-family:'Pretendard',serif;font-size:16px;color:var(--text);outline:none;transition:width 0.3s,padding 0.3s">
+      <input type="text" id="search-input" placeholder="검색..." oninput="renderSearchResults()" style="width:0;padding:0;border:none;background:transparent;font-family:'Pretendard',serif;font-size:16px;color:var(--text);outline:none;transition:width 0.3s,padding 0.3s">
       <button onclick="toggleSearch();return false;" id="search-btn" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px">🔍</button>
     </div>
+  </div>
+    
 </div>
 
   <div id="list-view"><div class="loading">불러오는 중...</div></div>
@@ -522,6 +523,9 @@ let searchOpen = false;
 function toggleSearch() {
   searchOpen = !searchOpen;
   const input = document.getElementById('search-input');
+  const calGrid = document.getElementById('cal-grid');
+  const calHeader = document.querySelector('.cal-header');
+  const longSection = document.getElementById('long-events-section');
   if (searchOpen) {
     input.style.width = '160px';
     input.style.padding = '6px 10px';
@@ -529,14 +533,46 @@ function toggleSearch() {
     input.style.borderRadius = '20px';
     input.style.background = 'var(--surface)';
     input.focus();
+    if (calGrid) calGrid.style.display = 'none';
+    if (calHeader) calHeader.style.display = 'none';
+    if (longSection) longSection.style.display = 'none';
+    renderSearchResults();
   } else {
     input.style.width = '0';
     input.style.padding = '0';
     input.style.border = 'none';
     input.style.background = 'transparent';
     input.value = '';
+    if (calGrid) calGrid.style.display = '';
+    if (calHeader) calHeader.style.display = '';
     renderCurrent();
   }
+}
+
+function renderSearchResults() {
+  const query = document.getElementById('search-input').value.trim().toLowerCase();
+  const calView = document.getElementById('cal-view');
+  let resultDiv = document.getElementById('search-results');
+  if (!resultDiv) {
+    resultDiv = document.createElement('div');
+    resultDiv.id = 'search-results';
+    calView.appendChild(resultDiv);
+  }
+  if (!query) { resultDiv.innerHTML = ''; return; }
+  const results = allEvents.filter(e => !e.hidden &&
+    (e.title?.toLowerCase().includes(query) || e.venue?.toLowerCase().includes(query)));
+  if (!results.length) { resultDiv.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:1rem 0">검색 결과가 없어요</p>'; return; }
+  resultDiv.innerHTML = `<div class="event-list">${results.map(e => `
+    <div class="event-row" style="display:grid;grid-template-columns:${e.img ? '120px 1fr' : '1fr'};gap:0;padding:0;overflow:hidden" onclick="openDetail('${e._key}')">
+      ${e.img ? `<img src="${e.img}" style="width:120px;height:100%;object-fit:cover;min-height:100px;border-radius:8px 0 0 8px">` : ''}
+      <div style="padding:12px 14px">
+        <span class="event-badge badge-${e.category}">${e.category}</span>
+        <div class="event-title">${e.title}</div>
+        ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
+        <div class="event-dates">${fmtDate(e.startDate)}${e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
 }
 
   
