@@ -1028,9 +1028,8 @@ function fmtDate(d) {
   document.getElementById('lep-date').textContent = e.startDate + (e.endDate && e.endDate !== e.startDate ? ' ~ ' + e.endDate : '');
   const venueEl = document.getElementById('lep-venue');
   venueEl.innerHTML = e.venue ? `📍 ${e.venue} <button onclick="navigator.clipboard.writeText('${e.venue}').then(()=>alert('복사됐어요!'))" style="font-size:10px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:4px;padding:1px 6px;cursor:pointer;color:var(--muted);margin-left:4px">복사</button>` : '';
-  const linkEl = document.getElementById('lep-link');
-  if (e.url) { linkEl.href = e.url; linkEl.style.display = 'inline-block'; }
-  else { linkEl.style.display = 'none'; }
+  const card = document.querySelector('#long-event-popup > div');
+    card.dataset.url = e.url || '';
   const imgWrap = document.getElementById('lep-img-wrap');
   const imgEl = document.getElementById('lep-img');
   if (e.img) { imgEl.src = e.img; imgWrap.style.display = 'block'; }
@@ -1084,7 +1083,7 @@ loadEvents();
   </script>
   
   <div id="long-event-popup" style="display:none;position:fixed;inset:0;background:rgba(26,23,20,0.3);z-index:200;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:var(--surface);border-radius:12px;width:calc(100% - 2rem);max-width:600px;overflow:hidden;position:relative;border:1px solid var(--border);margin:0 1rem 1rem;cursor:pointer" onclick="const l=document.getElementById('lep-link');if(l&&l.href&&l.href!='#')window.open(l.href,'_blank')">
+  <div style="background:var(--surface);border-radius:12px;width:calc(100% - 2rem);max-width:600px;overflow:hidden;position:relative;border:1px solid var(--border);margin:0 1rem 1rem;cursor:pointer" onclick="if(this.dataset.url)window.open(this.dataset.url,'_blank')">
     <button onclick="event.stopPropagation();document.getElementById('long-event-popup').style.display='none'" style="position:absolute;top:0.75rem;right:0.75rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);z-index:10">✕</button>
     <div style="display:grid;grid-template-columns:120px 1fr;gap:0">
       <div id="lep-img-wrap" style="display:none">
