@@ -537,7 +537,11 @@ function toggleSearch() {
     if (calHeader) calHeader.style.display = 'none';
     if (longSection) longSection.style.display = 'none';
     renderSearchResults();
-  } else {
+    const todayEvents = document.getElementById('today-events');
+    if (todayEvents) todayEvents.style.display = 'none';
+   } 
+    
+  else {
     input.style.width = '0';
     input.style.padding = '0';
     input.style.border = 'none';
@@ -546,6 +550,8 @@ function toggleSearch() {
     if (calGrid) calGrid.style.display = '';
     if (calHeader) calHeader.style.display = '';
     renderCurrent();
+    const todayEvents = document.getElementById('today-events');
+    if (todayEvents) todayEvents.style.display = '';
   }
 }
 
