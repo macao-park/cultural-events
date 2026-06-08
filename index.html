@@ -828,7 +828,7 @@ const list = document.getElementById('long-events-list');
 if (longEvents.length > 0) {
   sec.style.display = 'block';
   list.innerHTML = longEvents.map(e => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);cursor:pointer" onclick="openLongEventPopup('${e._key}')">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);cursor:pointer" onclick="const ev=allEvents.find(x=>x._key==='${e._key}');if(ev&&ev.url)window.open(ev.url,'_blank')">
       <div style="display:flex;align-items:center;gap:8px">
         <span class="event-badge badge-${e.category}">${e.category}</span>
         <span style="font-size:14px">${e.title}</span>
