@@ -1085,7 +1085,7 @@ loadEvents();
 </script>
   <div id="long-event-popup" style="display:none;position:fixed;inset:0;background:rgba(26,23,20,0.3);z-index:200;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:var(--surface);border-radius:12px;width:calc(100% - 2rem);max-width:600px;overflow:hidden;position:relative;border:1px solid var(--border);margin:0 1rem 1rem;cursor:pointer" onclick="const l=document.getElementById('lep-link');if(l&&l.href&&l.href!='#')window.open(l.href,'_blank')">
-    <button onclick="document.getElementById('long-event-popup').style.display='none'" style="position:absolute;top:0.75rem;right:0.75rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);z-index:10">✕</button>
+    <button onclick="event.stopPropagation();document.getElementById('long-event-popup').style.display='none'" style="position:absolute;top:0.75rem;right:0.75rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);z-index:10">✕</button>
     <div style="display:grid;grid-template-columns:120px 1fr;gap:0">
       <div id="lep-img-wrap" style="display:none">
         <img id="lep-img" style="width:120px;height:100%;min-height:120px;object-fit:cover">
@@ -1097,7 +1097,6 @@ loadEvents();
         <div id="lep-title" style="font-size:15px;font-weight:400;margin-bottom:6px"></div>
         <div id="lep-date" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:4px"></div>
         <div id="lep-venue" style="font-size:12px;color:var(--muted);margin-bottom:8px"></div>
-        <a id="lep-link" href="#" target="_blank" style="display:none;font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:10px;padding:3px 12px">LINK</a>
       </div>
     </div>
   </div>
