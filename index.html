@@ -1082,7 +1082,6 @@ if (hash === 'cal' || hash === 'map' || hash === 'list') setView(hash);
 else setView('cal');
 loadEvents();
   
-</script>
   <div id="long-event-popup" style="display:none;position:fixed;inset:0;background:rgba(26,23,20,0.3);z-index:200;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
   <div style="background:var(--surface);border-radius:12px;width:calc(100% - 2rem);max-width:600px;overflow:hidden;position:relative;border:1px solid var(--border);margin:0 1rem 1rem;cursor:pointer" onclick="const l=document.getElementById('lep-link');if(l&&l.href&&l.href!='#')window.open(l.href,'_blank')">
     <button onclick="event.stopPropagation();document.getElementById('long-event-popup').style.display='none'" style="position:absolute;top:0.75rem;right:0.75rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);z-index:10">✕</button>
@@ -1101,4 +1100,6 @@ loadEvents();
     </div>
   </div>
 </div>
+  
+</script>
 </body>
