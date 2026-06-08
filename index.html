@@ -828,7 +828,7 @@ const list = document.getElementById('long-events-list');
 if (longEvents.length > 0) {
   sec.style.display = 'block';
   list.innerHTML = longEvents.map(e => `
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);cursor:pointer" onclick="const ev=allEvents.find(x=>x._key==='${e._key}');if(ev&&ev.url)window.open(ev.url,'_blank')">
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:0.5px solid var(--border);cursor:pointer" onclick="openLongEventPopup('${e._key}')">
       <div style="display:flex;align-items:center;gap:8px">
         <span class="event-badge badge-${e.category}">${e.category}</span>
         <span style="font-size:14px">${e.title}</span>
@@ -1084,7 +1084,7 @@ loadEvents();
   
 </script>
   <div id="long-event-popup" style="display:none;position:fixed;inset:0;background:rgba(26,23,20,0.3);z-index:200;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
-  <div style="background:var(--surface);border-radius:12px;width:calc(100% - 2rem);max-width:600px;overflow:hidden;position:relative;border:1px solid var(--border);margin:0 1rem 1rem">
+  <div style="background:var(--surface);border-radius:12px;width:calc(100% - 2rem);max-width:600px;overflow:hidden;position:relative;border:1px solid var(--border);margin:0 1rem 1rem;cursor:pointer" onclick="const l=document.getElementById('lep-link');if(l&&l.href&&l.href!='#')window.open(l.href,'_blank')">
     <button onclick="document.getElementById('long-event-popup').style.display='none'" style="position:absolute;top:0.75rem;right:0.75rem;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);z-index:10">✕</button>
     <div style="display:grid;grid-template-columns:120px 1fr;gap:0">
       <div id="lep-img-wrap" style="display:none">
