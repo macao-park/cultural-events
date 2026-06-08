@@ -333,19 +333,21 @@ header {
     </div>
     <button onclick="const p=document.getElementById('filter-panel');p.style.display=p.style.display==='none'?'flex':'none'" style="background:none;border:1px solid var(--border);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:16px"> ▼ </button>
   </div>
+    
   <div class="filters" id="filter-panel" style="display:none;flex-wrap:wrap;gap:6px;align-items:center">
-    <button class="filter-btn active" data-cat="all" onclick="setFilter(this,'all')">전체</button>
-    <button class="filter-btn" data-cat="전시" onclick="setFilter(this,'전시')">전시</button>
-    <button class="filter-btn" data-cat="공연" onclick="setFilter(this,'공연')">공연</button>
-    <button class="filter-btn" data-cat="문화" onclick="setFilter(this,'문화')">문화</button>
-    <button class="filter-btn" data-cat="축제" onclick="setFilter(this,'축제')">축제</button>
-    <button class="filter-btn" data-cat="기타" onclick="setFilter(this,'기타')">기타</button>
-    <button id="past-btn" onclick="togglePast()" style="padding:5px 12px;font-size:12px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer">지난 행사 보기</button>
-    <div id="search-wrap" style="display:inline-flex;align-items:center;gap:6px">
-      <input type="text" id="search-input" placeholder="검색..." oninput="renderSearchResults()" style="width:0;padding:0;border:none;background:transparent;font-family:'Pretendard',serif;font-size:16px;color:var(--text);outline:none;transition:width 0.3s,padding 0.3s">
-      <button onclick="toggleSearch();return false;" id="search-btn" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;padding:4px">🔍</button>
-    </div>
+  <button class="filter-btn active" data-cat="all" onclick="setFilter(this,'all')">전체</button>
+  <button class="filter-btn" data-cat="전시" onclick="setFilter(this,'전시')">전시</button>
+  <button class="filter-btn" data-cat="공연" onclick="setFilter(this,'공연')">공연</button>
+  <button class="filter-btn" data-cat="문화" onclick="setFilter(this,'문화')">문화</button>
+  <button class="filter-btn" data-cat="축제" onclick="setFilter(this,'축제')">축제</button>
+  <button class="filter-btn" data-cat="기타" onclick="setFilter(this,'기타')">기타</button>
+  <button id="past-btn" onclick="togglePast()" style="padding:5px 12px;font-size:12px;font-family:'DM Mono',monospace;border:1px solid var(--border);border-radius:20px;background:var(--surface);color:var(--muted);cursor:pointer">지난 행사 보기</button>
+  <div style="display:inline-flex;align-items:center;gap:4px;border:1px solid var(--border);border-radius:20px;background:var(--surface);padding:3px 10px">
+    <span style="font-size:14px;color:var(--muted)">🔍</span>
+    <input type="text" id="search-input" placeholder="검색..." oninput="renderSearchResults();toggleSearchView()" style="width:100px;padding:2px 4px;border:none;background:transparent;font-family:'Pretendard',serif;font-size:13px;color:var(--text);outline:none">
   </div>
+  <button onclick="closeFilter()" style="padding:5px 12px;font-size:12px;font-family:'DM Mono',monospace;background:none;border:none;cursor:pointer;color:var(--muted)">취소</button>
+</div>
     
 </div>
 
@@ -540,6 +542,41 @@ function toggleSearch() {
     const todayEvents = document.getElementById('today-events');
     if (todayEvents) todayEvents.style.display = 'none';
    } 
+  
+function closeFilter() {
+  document.getElementById('filter-panel').style.display = 'none';
+  document.getElementById('search-input').value = '';
+  const calGrid = document.getElementById('cal-grid');
+  const calHeader = document.querySelector('.cal-header');
+  const todayEvents = document.getElementById('today-events');
+  const longSection = document.getElementById('long-events-section');
+  const resultDiv = document.getElementById('search-results');
+  if (calGrid) calGrid.style.display = '';
+  if (calHeader) calHeader.style.display = '';
+  if (todayEvents) todayEvents.style.display = '';
+  if (longSection) longSection.style.display = '';
+  if (resultDiv) resultDiv.innerHTML = '';
+  renderCurrent();
+}
+
+function toggleSearchView() {
+  const query = document.getElementById('search-input').value.trim();
+  const calGrid = document.getElementById('cal-grid');
+  const calHeader = document.querySelector('.cal-header');
+  const todayEvents = document.getElementById('today-events');
+  const longSection = document.getElementById('long-events-section');
+  if (query) {
+    if (calGrid) calGrid.style.display = 'none';
+    if (calHeader) calHeader.style.display = 'none';
+    if (todayEvents) todayEvents.style.display = 'none';
+    if (longSection) longSection.style.display = 'none';
+  } else {
+    if (calGrid) calGrid.style.display = '';
+    if (calHeader) calHeader.style.display = '';
+    if (todayEvents) todayEvents.style.display = '';
+    if (longSection) longSection.style.display = '';
+  }
+}
     
   else {
     input.style.width = '0';
