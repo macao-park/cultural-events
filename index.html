@@ -556,10 +556,8 @@ function closeFilter() {
   if (todayEvents) todayEvents.style.display = '';
   if (longSection) longSection.style.display = '';
   if (resultDiv) resultDiv.innerHTML = '';
-  const searchResults = document.getElementById('search-results');
-  if (searchResults) searchResults.innerHTML = '';
-  document.getElementById('cal-view').style.display = currentView === 'cal' ? 'block' : 'none';
-  document.getElementById('map-view').style.display = currentView === 'map' ? 'block' : 'none';
+  document.getElementById('cal-view').style.display = 'block';
+  document.getElementById('map-view').style.display = 'none';
   renderCurrent();
 }
 
