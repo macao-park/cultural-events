@@ -765,8 +765,14 @@ sec.innerHTML = `
     </div>`;
   }
 
-  // 오늘 행사 기본 표시
-  const todayEvents = allEvents.filter(e => !e.calHidden && e.startDate <= todayStr && (e.endDate||e.startDate) >= todayStr && (activeFilter === 'all' || e.category === activeFilter) && (showPast || (e.endDate||e.startDate) >= todayStr));
+  const todayEvents = allEvents.filter(e => {
+    if (e.calHidden || e.hidden) return false;
+    if (e.startDate > todayStr || (e.endDate||e.startDate) < todayStr) return false;
+    if (activeFilter !== 'all' && e.category !== activeFilter) return false;
+    if (!showPast && (e.endDate||e.startDate) < todayStr) return false;
+    const diff = (new Date(e.endDate||e.startDate) - new Date(e.startDate)) / (1000*60*60*24);
+    return diff < 8;
+  });
   renderTodaySection(todayStr, todayEvents);
 
   for (let i = 0; i < firstDay; i++) {
