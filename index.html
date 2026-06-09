@@ -994,7 +994,10 @@ function setView(v) {
   document.getElementById('list-view').style.display = v === 'list' ? 'block' : 'none';
   document.getElementById('cal-view').style.display = v === 'cal' ? 'block' : 'none';
   document.getElementById('map-view').style.display = v === 'map' ? 'block' : 'none';
-  if (v === 'map') renderMap();
+  if (v === 'map') {
+    if (typeof kakao !== 'undefined') renderMap();
+    else setTimeout(() => { if (typeof kakao !== 'undefined') renderMap(); }, 1000);
+  }
   const btns = document.querySelectorAll('.tab-btn');
   btns.forEach(b => b.classList.remove('active'));
   if (v === 'list') btns[0].classList.add('active');
