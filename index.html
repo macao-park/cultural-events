@@ -603,7 +603,7 @@ function renderSearchResults() {
     (e.title?.toLowerCase().includes(query) || e.venue?.toLowerCase().includes(query)));
   if (!results.length) { resultDiv.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:1rem 0">검색 결과가 없어요</p>'; return; }
   resultDiv.innerHTML = `<div class="event-list">${results.map(e => `
-    <div class="event-row" style="display:grid;grid-template-columns:${e.img ? '120px 1fr' : '1fr'};gap:0;padding:0;overflow:hidden;cursor:default">
+    <div class="event-row" style="display:grid;grid-template-columns:${e.img ? '120px 1fr' : '1fr'};gap:0;padding:0;overflow:hidden;cursor:${e.url ? 'pointer' : 'default'}" onclick="this.dataset.url&&window.open(this.dataset.url,'_blank')" data-url="${e.url||''}">
       ${e.img ? `<img src="${e.img}" style="width:120px;height:100%;object-fit:cover;min-height:100px;border-radius:8px 0 0 8px">` : ''}
       <div style="padding:12px 14px">
         <span class="event-badge badge-${e.category}">${e.category}</span>
@@ -611,7 +611,6 @@ function renderSearchResults() {
         ${e.venue ? `<div class="event-venue">📍 ${e.venue}</div>` : ''}
         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
           <div class="event-dates">${fmtDate(e.startDate)}${e.endDate && e.endDate !== e.startDate ? ' ~ ' + fmtDate(e.endDate) : ''}</div>
-          ${e.url ? `<a href="${e.url}" target="_blank" style="font-size:11px;font-family:'DM Mono',monospace;color:var(--accent);text-decoration:none;border:1px solid var(--accent);border-radius:10px;padding:2px 10px">LINK</a>` : ''}
         </div>
       </div>
     </div>`).join('')}
