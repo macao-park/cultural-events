@@ -1003,6 +1003,7 @@ function setFilter(btn, cat) {
   btn.classList.add('active');
   updateCount();
   renderCurrent();
+  if (currentView === 'map') renderMap();
 }
 
 function changeMonth(d) {
