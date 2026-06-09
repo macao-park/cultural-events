@@ -588,12 +588,12 @@ function toggleSearchView() {
 
 function renderSearchResults() {
   const query = document.getElementById('search-input').value.trim().toLowerCase();
-  const calView = document.getElementById('cal-view');
+  const container = currentView === 'map' ? document.getElementById('map-view') : document.getElementById('cal-view');
   let resultDiv = document.getElementById('search-results');
   if (!resultDiv) {
     resultDiv = document.createElement('div');
     resultDiv.id = 'search-results';
-    calView.appendChild(resultDiv);
+    container.appendChild(resultDiv)
   }
   if (!query) { resultDiv.innerHTML = ''; return; }
   const results = allEvents.filter(e => !e.hidden &&
