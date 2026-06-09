@@ -999,12 +999,16 @@ function setView(v) {
   else if (v === 'map') btns[2].classList.add('active');
   renderCurrent();
 }
+  
 function setFilter(btn, cat) {
   activeFilter = cat;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   updateCount();
   renderCurrent();
+  if (currentView === 'map') renderMap();
+  const query = document.getElementById('search-input')?.value?.trim();
+  if (query) renderSearchResults();
 }
 
 function changeMonth(d) {
