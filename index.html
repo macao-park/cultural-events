@@ -557,8 +557,13 @@ function closeFilter() {
   if (todayEvents) todayEvents.style.display = '';
   if (longSection) longSection.style.display = '';
   if (resultDiv) resultDiv.innerHTML = '';
-  document.getElementById('cal-view').style.display = 'block';
-  document.getElementById('map-view').style.display = 'none';
+  if (currentView === 'map') {
+    document.getElementById('map-view').style.display = 'block';
+    document.getElementById('cal-view').style.display = 'none';
+  } else {
+    document.getElementById('cal-view').style.display = 'block';
+    document.getElementById('map-view').style.display = 'none';
+  }
   renderCurrent();
 }
 
