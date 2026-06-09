@@ -573,16 +573,19 @@ function toggleSearchView() {
   const calHeader = document.querySelector('.cal-header');
   const todayEvents = document.getElementById('today-events');
   const longSection = document.getElementById('long-events-section');
+  const kakaoMap = document.getElementById('kakao-map');
   if (query) {
     if (calGrid) calGrid.style.display = 'none';
     if (calHeader) calHeader.style.display = 'none';
     if (todayEvents) todayEvents.style.display = 'none';
     if (longSection) longSection.style.display = 'none';
+    if (kakaoMap) kakaoMap.style.display = 'none';
   } else {
     if (calGrid) calGrid.style.display = '';
     if (calHeader) calHeader.style.display = '';
     if (todayEvents) todayEvents.style.display = '';
     if (longSection) longSection.style.display = '';
+    if (kakaoMap) kakaoMap.style.display = '';
   }
 }
 
