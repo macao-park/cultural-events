@@ -737,7 +737,8 @@ function renderCal() {
     if (!sec) {
       sec = document.createElement('div');
       sec.id = 'today-events';
-      document.getElementById('cal-view').appendChild(sec);
+      const longSec = document.getElementById('long-events-section');
+      longSec ? longSec.before(sec) : document.getElementById('cal-view').appendChild(sec);
     }
     if (!events || events.length === 0) { sec.innerHTML = ''; return; }
     const [y,m,d] = dateStr.split('-');
