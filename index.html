@@ -673,8 +673,7 @@ function showMoreEvents(dateStr) {
 
   const CAT_COLORS = { '전시':'#6C5CE7','공연':'#E17055','문화':'#00B894','축제':'#FDCB6E','기타':'#636E72' };
   const geocoder = new kakao.maps.services.Geocoder();
-
-  const visible = allEvents.filter(e => !e.hidden && !e.calHidden);
+  const visible = allEvents.filter(e => !e.hidden && !e.calHidden && (activeFilter === 'all' || e.category === activeFilter));
   const usedCoords = [];
     
   visible.forEach(e => {
