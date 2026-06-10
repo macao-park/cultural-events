@@ -832,11 +832,14 @@ sec.innerHTML = `
 
     grid.appendChild(cell);
   }
+  const monthStart = `${calYear}-${p(calMonth+1)}-01`;
+  const monthEnd = `${calYear}-${p(calMonth+1)}-${p(new Date(calYear, calMonth+1, 0).getDate())}`;
   const longEvents = allEvents.filter(e => {
-  if (!e.startDate || !e.endDate || e.hidden || e.calHidden) return false;
-  const diff = (new Date(e.endDate) - new Date(e.startDate)) / (1000*60*60*24);
-  return diff >= 8;
-});
+    if (!e.startDate || !e.endDate || e.hidden || e.calHidden) return false;
+    const diff = (new Date(e.endDate) - new Date(e.startDate)) / (1000*60*60*24);
+    if (diff < 8) return false;
+    return e.startDate <= monthEnd && e.endDate >= monthStart;
+  });
 const sec = document.getElementById('long-events-section');
 const list = document.getElementById('long-events-list');
 if (longEvents.length > 0) {
