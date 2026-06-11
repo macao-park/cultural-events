@@ -461,7 +461,14 @@ header {
     </div>
     <div class="form-row">
       <label>포스터 이미지 URL (선택)</label>
-      <input type="url" id="f-img" placeholder="https://...이미지주소">
+      <div style="display:flex;gap:8px;align-items:center">
+        <input type="url" id="f-img" placeholder="https://...이미지주소" style="flex:1">
+        <label style="cursor:pointer;padding:6px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;white-space:nowrap;color:var(--muted)">
+          📁 파일 업로드
+          <input type="file" id="f-img-file" accept="image/*" style="display:none" onchange="uploadImgFile(this)">
+        </label>
+      </div>
+      <div id="f-img-upload-status" style="font-size:11px;color:var(--muted);margin-top:4px"></div>
     </div>
     <div class="form-row">
       <label>메모 (선택)</label>
@@ -477,6 +484,51 @@ header {
   </div>
 </div>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-storage.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBNb0LRiew9tKrudRIbOPBFuAKMlOfQtxc",
+    authDomain: "cultural-events-5fcd8.firebaseapp.com",
+    databaseURL: "https://cultural-events-5fcd8-default-rtdb.firebaseio.com",
+    projectId: "cultural-events-5fcd8",
+    storageBucket: "cultural-events-5fcd8.firebasestorage.app",
+    messagingSenderId: "175158698383",
+    appId: "1:175158698383:web:135672d3038887ffc3abfa"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const storage = getStorage(app);
+
+  window.uploadImgFile = async function(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const status = document.getElementById('f-img-upload-status');
+    status.textContent = '업로드 중...';
+    try {
+      const storageRef = ref(storage, `events/${Date.now()}_${file.name}`);
+      await uploadBytes(storageRef, file);
+      const url = await getDownloadURL(storageRef);
+      document.getElementById('f-img').value = url;
+      status.textContent = '✅ 업로드 완료';
+    } catch(e) {
+      status.textContent = '❌ 업로드 실패: ' + e.message;
+    }
+  };
+</script>
+  
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script>
+  const firebaseApp = firebase.initializeApp({
+    apiKey: "여기에_apiKey",
+    storageBucket: "cultural-events-5fcd8.appspot.com"
+  });
+  const storage = firebase.storage();
+</script>
+
+  
 <script>
 const DB = 'https://cultural-events-5fcd8-default-rtdb.firebaseio.com/events';
 const ADMIN_PW = '1234';
@@ -984,7 +1036,7 @@ async function saveEvent() {
   updateCount();
   renderCurrent();
 }
-
+ 
 async function deleteEvent() {
   if (!confirm('이 행사를 삭제할까요?')) return;
   await apiDelete(editingId);
