@@ -539,7 +539,7 @@ async function loadEvents() {
   updateCount();
   renderCurrent();
   renderCurrent();
-if (currentView === 'map') renderMap();  // ← 추가
+if (currentView === 'map' && typeof kakao !== 'undefined') renderMap();
 }
 
 async function apiAdd(data) {
