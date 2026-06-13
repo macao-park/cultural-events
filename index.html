@@ -891,7 +891,10 @@ if (longEvents.length > 0) {
         <span class="event-badge badge-${e.category}">${e.category}</span>
         <span style="font-size:14px">${e.title}</span>
       </div>
-      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${fmtDate(e.startDate)} ~ ${fmtDate(e.endDate)}</span>
+      <div style="display:flex;align-items:center;gap:4px">
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${fmtDate(e.startDate)} ~ ${fmtDate(e.endDate)}</span>
+        ${isAdmin ? `<button onclick="event.stopPropagation();openModal('${e._key}')" style="font-size:11px;font-family:'DM Mono',monospace;background:none;border:1px solid var(--border);border-radius:10px;padding:2px 8px;cursor:pointer;color:var(--muted)">수정</button><button onclick="event.stopPropagation();if(confirm('삭제할까요?')){apiDelete('${e._key}');allEvents=allEvents.filter(ev=>ev._key!=='${e._key}');renderCurrent();}" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--muted);padding:2px 4px">🗑️</button>` : ''}
+      </div>
     </div>`).join('');
 } else {
   sec.style.display = 'none';
