@@ -369,7 +369,7 @@ header {
     </div>
   </div>
   <div id="map-view" style="display:none;position:relative;overflow:hidden">
-  <div id="kakao-map" style="width:100%;height:500px;border-radius:12px;overflow:hidden;position:relative">
+  <div id="kakao-map" style="width:100%;height:500px;border-radius:12px;overflow:hidden;position:relative;touch-action:none">
     <div id="map-card" style="display:none;position:absolute;bottom:1rem;left:1rem;right:1rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;z-index:10;cursor:pointer" onclick="if(this.dataset.url)window.open(this.dataset.url,'_blank')">
       <button onclick="event.stopPropagation();document.getElementById('map-card').style.display='none'" style="position:absolute;top:0.5rem;right:0.5rem;background:rgba(255,255,255,0.9);border:none;border-radius:50%;width:24px;height:24px;font-size:14px;cursor:pointer;color:var(--muted);z-index:100">✕</button>
   <div style="display:grid;grid-template-columns:120px 1fr;gap:0">
