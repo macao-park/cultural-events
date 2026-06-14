@@ -519,18 +519,19 @@ header {
 
   
 <script>
-const DB = 'https://cultural-events-5fcd8-default-rtdb.firebaseio.com/events';
-const ADMIN_PW = '1234';
-let isAdmin = false;
-let allEvents = [];
-let activeFilter = 'all';
-let currentView = 'list';
-let calYear, calMonth;
-let editingId = null;
-let showPast = false;
-const today = new Date();
-calYear = today.getFullYear();
-calMonth = today.getMonth();
+  const DB = 'https://cultural-events-5fcd8-default-rtdb.firebaseio.com/events';
+  const ADMIN_PW = '1234';
+  let isAdmin = false;
+  let allEvents = [];
+  let activeFilter = 'all';
+  let currentView = 'list';
+  let calYear, calMonth;
+  let selectedDate = null;
+  let editingId = null;
+  let showPast = false;
+  const today = new Date();
+  calYear = today.getFullYear();
+  calMonth = today.getMonth();
 
 async function loadEvents() {
   const res = await fetch(DB + '.json');
@@ -773,8 +774,6 @@ function renderCal() {
   const todayStr = `${today.getFullYear()}-${p(today.getMonth()+1)}-${p(today.getDate())}`;
 
   const CAT_COLORS = { '전시':'#B5D4F4','공연':'#F4C0D1','문화':'#FAC775','축제':'#9FE1CB','기타':'#D3D1C7' };
-
-  let selectedDate = null;
 
   function renderTodaySection(dateStr, events) {
     let sec = document.getElementById('today-events');
