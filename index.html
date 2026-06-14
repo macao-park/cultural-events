@@ -1071,6 +1071,7 @@ function changeMonth(d) {
   calMonth += d;
   if (calMonth > 11) { calMonth = 0; calYear++; }
   if (calMonth < 0) { calMonth = 11; calYear--; }
+  selectedDate = `${calYear}-${p(calMonth+1)}-01`;
   renderCal();
 }
 
