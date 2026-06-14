@@ -816,7 +816,16 @@ sec.innerHTML = `
     const diff = (new Date(e.endDate||e.startDate) - new Date(e.startDate)) / (1000*60*60*24);
     return diff < 8;
   });
-  renderTodaySection(todayStr, todayEvents);
+  const initDateStr = (selectedDate && selectedDate.startsWith(`${calYear}-${p(calMonth+1)}`)) ? selectedDate : todayStr;
+  const initEvents = allEvents.filter(e => {
+    if (e.calHidden || e.hidden) return false;
+    if (e.startDate > initDateStr || (e.endDate||e.startDate) < initDateStr) return false;
+    if (activeFilter !== 'all' && e.category !== activeFilter) return false;
+    if (!showPast && (e.endDate||e.startDate) < todayStr) return false;
+    const diff = (new Date(e.endDate||e.startDate) - new Date(e.startDate)) / (1000*60*60*24);
+    return diff < 8;
+  });
+  renderTodaySection(initDateStr, initEvents);
 
   for (let i = 0; i < firstDay; i++) {
     const d = document.createElement('div'); d.className = 'cal-cell other-month';
@@ -861,6 +870,7 @@ sec.innerHTML = `
 
     // 날짜 클릭 → 해당일 행사 표시
     cell.onclick = () => {
+      selectedDate = dateStr;
       document.querySelectorAll('.cal-cell.selected').forEach(c => {
         c.classList.remove('selected');
         c.style.background = 'transparent';
